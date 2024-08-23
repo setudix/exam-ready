@@ -17,6 +17,8 @@ import QuizIcon from "@mui/icons-material/Quiz";
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import GoogleSignInButton from "./GoogleSignInButton";
+import LoggedInAvatar from "./LoggedInAvatar";
+import { Skeleton } from "@mui/material";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -25,25 +27,17 @@ function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
-  const { data: session } = useSession();
-
+  const { data: session, status } = useSession();
+ 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
 
   return (
     <AppBar position="static">
@@ -134,45 +128,11 @@ function Navbar() {
               </Button>
             ))}
           </Box>
-
-          {!session && (
-            <GoogleSignInButton />
-          )}
-          {session && (
-            <Box sx={{ flexGrow: 0 }}>
-              <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src={session.user.image}/>
-                </IconButton>
-              </Tooltip>
-              <Menu
-                sx={{ mt: "45px" }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
-              >
-                {/* {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))} */}
-
-                <MenuItem onClick={() => signOut() }>
-                  <Typography textAlign="center">Sign Out</Typography>
-                </MenuItem>
-              </Menu>
-            </Box>
-          )}
+          { status === "loading" ? 
+          <Skeleton variant="circular" width={40} height={40}/> : 
+              (session ? <LoggedInAvatar session={session}/> : <GoogleSignInButton></GoogleSignInButton>)
+          }
+ 
         </Toolbar>
       </Container>
     </AppBar>
