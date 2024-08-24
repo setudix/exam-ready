@@ -14,11 +14,12 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import QuizIcon from "@mui/icons-material/Quiz";
-
+// import {*} from "@mui/material/colors";
 import { signIn, signOut, useSession } from "next-auth/react";
 import GoogleSignInButton from "./GoogleSignInButton";
 import LoggedInAvatar from "./LoggedInAvatar";
 import { Skeleton } from "@mui/material";
+import SignInButton from "./SignInButton";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -40,7 +41,7 @@ function Navbar() {
 
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <QuizIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -113,6 +114,7 @@ function Navbar() {
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
+              
             }}
           >
             ExamReady
@@ -130,7 +132,7 @@ function Navbar() {
           </Box>
           { status === "loading" ? 
           <Skeleton variant="circular" width={40} height={40}/> : 
-              (session ? <LoggedInAvatar session={session}/> : <GoogleSignInButton></GoogleSignInButton>)
+              (session ? <LoggedInAvatar session={session}/> : <SignInButton/>)
           }
  
         </Toolbar>

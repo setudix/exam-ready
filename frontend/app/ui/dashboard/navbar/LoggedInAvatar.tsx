@@ -15,8 +15,10 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import QuizIcon from "@mui/icons-material/Quiz";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { signOut } from "next-auth/react";
+import { ListItemIcon, ListItemText } from "@mui/material";
 
 const LoggedInAvatar = ({ session }: { session: any }) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -52,7 +54,12 @@ const LoggedInAvatar = ({ session }: { session: any }) => {
         onClose={handleCloseUserMenu}
       >
         <MenuItem onClick={() => signOut()}>
-          <Typography textAlign="center">Sign Out</Typography>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText>
+            <Typography textAlign="center">Sign Out</Typography>
+          </ListItemText>
         </MenuItem>
       </Menu>
     </Box>
