@@ -17,12 +17,15 @@ import {
   Switch,
   FormControlLabel,
   Divider,
+  Button,
+  IconButton,
 } from "@mui/material";
 
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
-import MySwitch from "@/app/ui/dashboard/components/MySwitch";
+
+import PublishIcon from "@mui/icons-material/Publish";
 
 type FormValues = {
   examName: string;
@@ -30,6 +33,7 @@ type FormValues = {
   examDuration: number;
   questionSize: number;
   promptText: string;
+  userId: string;
 };
 const FormTest = () => {
   const examCreationForm = useForm<FormValues>();
@@ -43,8 +47,31 @@ const FormTest = () => {
   // useEffect(() => {
   //   // console.log(examDurationMode)
   // }, []);
-  const onSubmit = (data: FormValues) => {
-    console.log("form submitted", data);
+  const onSubmit = async (data: FormValues) => {
+
+    
+    console.log("before ", data);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/submit-form", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Form submitted successfully:", result);
+      // Handle success (e.g., show a success message, redirect, etc.)
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      // Handle error (e.g., show an error message)
+    }
   };
 
   const handleDurationSliderChange = (
@@ -199,15 +226,24 @@ const FormTest = () => {
                 placeholder="Enter the text prompt here"
                 variant="outlined"
                 {...register("promptText", {
-                  onChange: (e)=> setPromptText(e.target.value),
+                  onChange: (e) => setPromptText(e.target.value),
                 })}
               />
               <Box display="flex" flexDirection="row-reverse">
                 <Typography variant="caption" color="text.secondary">
-                  
                   {promptText.length}
                 </Typography>
               </Box>
+            </Grid>
+            <Grid item xs={9}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                startIcon={<PublishIcon color="white" />}
+              >
+                Submit
+              </Button>
             </Grid>
           </Grid>
         </form>
