@@ -1,0 +1,5 @@
+mysql_data/
+*.sql
+*.log
+.env
+docker-compose.override.yml
