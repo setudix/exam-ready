@@ -66,7 +66,7 @@ const SignInButton = () => {
             </Typography>
           </ListItemText>
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => signIn("facebook")}>
           <ListItemIcon>
             <FacebookIcon></FacebookIcon>
           </ListItemIcon>
