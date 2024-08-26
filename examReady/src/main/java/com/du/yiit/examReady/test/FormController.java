@@ -13,7 +13,7 @@ public class FormController {
 
     @PostMapping("/submit-form")
     public ResponseEntity<Object> submitForm(
-            @RequestBody FromValues fromValues
+            @RequestBody FormValues fromValues
     ) {
 
         // Log or process the form data as needed

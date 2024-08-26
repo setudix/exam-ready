@@ -1,5 +1,7 @@
 package com.du.yiit.examReady.test;
 
+import org.springframework.stereotype.Component;
+
 
 public class FormValues {
     private String examName;
