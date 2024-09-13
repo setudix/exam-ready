@@ -1,4 +1,3 @@
-// theme.ts
 import { createTheme } from '@mui/material/styles';
 import { teal } from '@mui/material/colors';
 
