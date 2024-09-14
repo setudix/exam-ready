@@ -22,7 +22,7 @@ const GradientBox = styled(Box)(({ theme }) => ({
 const HeroComponent = () => {
   return (
     <GradientBox>
-      <Container maxWidth="md">
+      <Container>
         <Box textAlign="center">
           <Typography variant="h2" sx={{ fontWeight: "bold" }} gutterBottom>
             Exam Ready
