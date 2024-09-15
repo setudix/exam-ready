@@ -10,7 +10,7 @@ const theme = createTheme({
       main: teal[300],
     },
     background: {
-      default: "#ededed", // Soft white background color
+      default: "#f3f4f5", // Soft white background color
     },
   },
 });

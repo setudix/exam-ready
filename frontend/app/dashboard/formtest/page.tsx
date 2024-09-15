@@ -46,17 +46,29 @@ type FormValues = {
   userId: string;
 };
 const FormTest = () => {
-  const examCreationForm = useForm<FormValues>();
+  const examCreationForm = useForm<FormValues>({
+    defaultValues: {
+      examName: "",
+      isExamDurationAuto: true,
+      examDuration: 0,
+      questionSize: 15,
+      promptText: "",
+    },
+  });
   const { register, control, handleSubmit, setValue, getValues, watch } =
     examCreationForm;
 
   const [isExamDurationAuto, setIsExamDurationAuto] = useState<boolean>(true);
   const [examDuration, setExamDuration] = useState<number>(0);
-  const [questionSize, setQuestionSize] = useState<number>(5);
+  const [questionSize, setQuestionSize] = useState<number>(15);
   const [promptText, setPromptText] = useState<string>("");
-  // useEffect(() => {
-  //   // console.log(examDurationMode)
-  // }, []);
+
+  useEffect(() => {
+    // console.log("state : " + isExamDurationAuto);
+    // console.log("form : " + getValues("isExamDurationAuto"));
+    setValue("isExamDurationAuto", isExamDurationAuto);
+  }, [isExamDurationAuto]);
+
   const onSubmit = async (data: FormValues) => {
     console.log("before ", data);
 
@@ -161,11 +173,12 @@ const FormTest = () => {
                   </Typography>
                 </Tooltip>
                 <Switch
+                  defaultChecked
                   value={isExamDurationAuto}
                   {...register("isExamDurationAuto", {
                     onChange: (e) => {
                       setIsExamDurationAuto((pv) => !pv);
-                      setValue("isExamDurationAuto", isExamDurationAuto);
+                      // console.log("from onchange: " + isExamDurationAuto);
                     },
                   })}
                 />
@@ -173,7 +186,7 @@ const FormTest = () => {
             </Box>
           </Stack>
           <Fade
-            in={isExamDurationAuto}
+            in={!isExamDurationAuto}
             // timeout={isExamDurationAuto? 1000: 0}
             // timeout={1000}
             timeout={{ appear: 0, enter: 700, exit: 200 }}
@@ -197,7 +210,7 @@ const FormTest = () => {
                   max={60}
                   aria-labelledby="exam-duration-slider"
                   valueLabelDisplay="auto"
-                  disabled={getValues("isExamDurationAuto") as boolean}
+                  // disabled={getValues("isExamDurationAuto") as boolean}
                   // {...register("examDuration")}
                 />
               </Box>
@@ -248,7 +261,8 @@ const FormTest = () => {
             </Stack>
             <Box display="flex" flexDirection="row-reverse">
               <Typography variant="caption" color="text.secondary">
-                {promptText.length + (promptText.length < 2 ? " character" : " characters")}
+                {promptText.length +
+                  (promptText.length < 2 ? " character" : " characters")}
               </Typography>
             </Box>
           </Stack>

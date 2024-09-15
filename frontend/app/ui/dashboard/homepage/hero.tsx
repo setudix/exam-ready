@@ -16,7 +16,8 @@ import routes from "@/app/routes";
 const GradientBox = styled(Box)(({ theme }) => ({
   background: `linear-gradient(to bottom, ${teal[500]} , ${teal[800]}, ${cyan[900]})`,
   color: theme.palette.primary.contrastText,
-  padding: theme.spacing(10, 0),
+  padding: theme.spacing(20, 0),
+  
 }));
 
 const HeroComponent = () => {
@@ -32,7 +33,7 @@ const HeroComponent = () => {
             AI-powered MCQs to ace your exams
           </Typography>
 
-          <Typography variant="body1" sx={{ mb: 4 }}>
+          <Typography variant="h6" sx={{ mb: 4 }}>
             Prepare for your{" "}
             <ReactTyped
               strings={[
