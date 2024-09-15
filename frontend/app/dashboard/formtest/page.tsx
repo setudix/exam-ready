@@ -19,6 +19,10 @@ import {
   Divider,
   Button,
   IconButton,
+  Tooltip,
+  Grow,
+  Fade,
+  Collapse,
 } from "@mui/material";
 
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -26,6 +30,12 @@ import { Controller, useForm } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 
 import PublishIcon from "@mui/icons-material/Publish";
+import ArticleIcon from "@mui/icons-material/Article";
+import TimerIcon from "@mui/icons-material/Timer";
+import AlarmOnIcon from "@mui/icons-material/AlarmOn";
+import AlarmOffIcon from "@mui/icons-material/AlarmOff";
+import NumbersIcon from "@mui/icons-material/Numbers";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 
 type FormValues = {
   examName: string;
@@ -36,20 +46,30 @@ type FormValues = {
   userId: string;
 };
 const FormTest = () => {
-  const examCreationForm = useForm<FormValues>();
+  const examCreationForm = useForm<FormValues>({
+    defaultValues: {
+      examName: "",
+      isExamDurationAuto: true,
+      examDuration: 0,
+      questionSize: 15,
+      promptText: "",
+    },
+  });
   const { register, control, handleSubmit, setValue, getValues, watch } =
     examCreationForm;
 
   const [isExamDurationAuto, setIsExamDurationAuto] = useState<boolean>(true);
   const [examDuration, setExamDuration] = useState<number>(0);
-  const [questionSize, setQuestionSize] = useState<number>(5);
+  const [questionSize, setQuestionSize] = useState<number>(15);
   const [promptText, setPromptText] = useState<string>("");
-  // useEffect(() => {
-  //   // console.log(examDurationMode)
-  // }, []);
-  const onSubmit = async (data: FormValues) => {
 
-    
+  useEffect(() => {
+    // console.log("state : " + isExamDurationAuto);
+    // console.log("form : " + getValues("isExamDurationAuto"));
+    setValue("isExamDurationAuto", isExamDurationAuto);
+  }, [isExamDurationAuto]);
+
+  const onSubmit = async (data: FormValues) => {
     console.log("before ", data);
 
     try {
@@ -113,44 +133,76 @@ const FormTest = () => {
   };
   return (
     <>
-      <Container className="mt-4">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={9}>
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: { xs: 360, md: 400, lg: 440 },
+          margin: "auto",
+          marginTop: "2rem",
+        }}
+      >
+        <Stack direction="column" spacing={3}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <ArticleIcon color="action" />
+            <Box sx={{ flexGrow: 1 }}>
+              {/* <Typography variant="caption">Exam Name:</Typography> */}
               <TextField
-                helperText="Please enter the exam name"
-                id="exam-name"
-                label="Exam Name"
                 fullWidth
+                placeholder="Enter the name of the exam"
+                variant="outlined"
+                label="Exam Name"
                 {...register("examName")}
               />
-            </Grid>
-            <Divider />
-            <Grid item xs={9}>
-              <Box display="flex" alignContent="center" flexDirection="row">
-                <Typography>Exam Duration:</Typography>
-                <FormControlLabel
-                  // value="start"
-                  control={
-                    <Switch
-                      defaultChecked
-                      value={isExamDurationAuto}
-                      // onChange={() =>
-                      //   setIsExamDurationAuto(!isExamDurationAuto)
-                      // }
-                      color="primary"
-                      {...register("isExamDurationAuto", {
-                        onChange: (e) => {
-                          setIsExamDurationAuto((pv) => !pv);
-                          setValue("isExamDurationAuto", isExamDurationAuto);
-                        },
-                      })}
-                    />
-                  }
-                  label="Automatic"
-                  labelPlacement="start"
-                  className="-my-2"
+            </Box>
+          </Stack>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            {isExamDurationAuto ? (
+              <AlarmOffIcon color="action" />
+            ) : (
+              <AlarmOnIcon color="action" />
+            )}
+            <Box sx={{ flexGrow: 1 }}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Tooltip title="Automatic duration means each question will have 1 minute">
+                  <Typography variant="subtitle1">
+                    Automatic Exam Duration:
+                  </Typography>
+                </Tooltip>
+                <Switch
+                  defaultChecked
+                  value={isExamDurationAuto}
+                  {...register("isExamDurationAuto", {
+                    onChange: (e) => {
+                      setIsExamDurationAuto((pv) => !pv);
+                      // console.log("from onchange: " + isExamDurationAuto);
+                    },
+                  })}
                 />
+              </Stack>
+            </Box>
+          </Stack>
+          <Fade
+            in={!isExamDurationAuto}
+            // timeout={isExamDurationAuto? 1000: 0}
+            // timeout={1000}
+            timeout={{ appear: 0, enter: 700, exit: 200 }}
+            unmountOnExit
+          >
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={2}
+              // display={!isExamDurationAuto ? "none" : ""}
+            >
+              <TimerIcon color="action" />
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="caption">
+                  {"Exam Duration (Minutes)"}
+                </Typography>
                 <Slider
                   value={examDuration}
                   onChange={handleDurationSliderChange}
@@ -158,97 +210,80 @@ const FormTest = () => {
                   max={60}
                   aria-labelledby="exam-duration-slider"
                   valueLabelDisplay="auto"
-                  disabled={getValues("isExamDurationAuto") as boolean}
+                  // disabled={getValues("isExamDurationAuto") as boolean}
                   // {...register("examDuration")}
-                  className="p-4 my-2 ml-4 mr-8"
-                />
-
-                <Controller
-                  name="examDuration"
-                  control={control}
-                  rules={{ min: 1, max: 60 }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      value={examDuration}
-                      size="small"
-                      onChange={(e) => {
-                        field.onChange(e);
-                        handleDurationInputChange(e);
-                      }}
-                      onBlur={(e) => {
-                        field.onBlur();
-                        handleExamDurationBlur();
-                      }}
-                      disabled={getValues("isExamDurationAuto") as boolean}
-                      inputProps={{
-                        step: 1,
-                        min: 1,
-                        max: 60,
-                        type: "number",
-                        "aria-labelledby": "exam-duration-slider",
-                      }}
-                    />
-                  )}
                 />
               </Box>
-            </Grid>
+            </Stack>
+          </Fade>
 
-            <Divider />
-            <Grid item xs={9}>
-              <Box display="flex" alignContent="center" flexDirection="row">
-                <Typography>No. of Questions: </Typography>
-                <Slider
-                  value={questionSize}
-                  // onChange={handleSliderChange}
-                  min={5}
-                  max={50}
-                  step={5}
-                  marks
-                  valueLabelDisplay="auto"
-                  {...register("questionSize", {
-                    onChange: (e) => {
-                      const newValue: number = Number(e?.target.value);
-                      handleSliderChange(e, newValue);
-                    },
-                  })}
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={9}>
-              <TextField
-                value={promptText}
-                fullWidth
-                multiline
-                minRows={1}
-                maxRows={7}
-                placeholder="Enter the text prompt here"
-                variant="outlined"
-                {...register("promptText", {
-                  onChange: (e) => setPromptText(e.target.value),
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <NumbersIcon color="action" />
+            <Box sx={{ flexGrow: 1 }}>
+              <Typography variant="caption">Number of Questions:</Typography>
+              <Slider
+                value={questionSize}
+                // onChange={handleSliderChange}
+                min={5}
+                max={50}
+                step={5}
+                marks
+                valueLabelDisplay="auto"
+                {...register("questionSize", {
+                  onChange: (e) => {
+                    const newValue: number = Number(e?.target.value);
+                    handleSliderChange(e, newValue);
+                  },
                 })}
               />
-              <Box display="flex" flexDirection="row-reverse">
-                <Typography variant="caption" color="text.secondary">
-                  {promptText.length}
-                </Typography>
+            </Box>
+          </Stack>
+          <Stack spacing={0}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <LibraryBooksIcon color="action" />
+              <Box sx={{ flexGrow: 1 }}>
+                <Stack>
+                  <TextField
+                    value={promptText}
+                    fullWidth
+                    multiline
+                    minRows={1}
+                    maxRows={7}
+                    label="Enter the text prompt"
+                    placeholder="Enter the text prompt here"
+                    variant="outlined"
+                    {...register("promptText", {
+                      onChange: (e) => setPromptText(e.target.value),
+                    })}
+                  />
+                </Stack>
               </Box>
-            </Grid>
-            <Grid item xs={9}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                startIcon={<PublishIcon color="white" />}
-              >
-                Submit
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-        <DevTool control={control} />
-      </Container>
+            </Stack>
+            <Box display="flex" flexDirection="row-reverse">
+              <Typography variant="caption" color="text.secondary">
+                {promptText.length +
+                  (promptText.length < 2 ? " character" : " characters")}
+              </Typography>
+            </Box>
+          </Stack>
+
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            spacing={2}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              startIcon={<PublishIcon />}
+            >
+              Submit
+            </Button>
+          </Stack>
+        </Stack>
+      </Box>
     </>
   );
 };

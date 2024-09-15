@@ -20,6 +20,7 @@ import GoogleSignInButton from "./GoogleSignInButton";
 import LoggedInAvatar from "./LoggedInAvatar";
 import { Skeleton } from "@mui/material";
 import SignInButton from "./SignInButton";
+import routes from "@/app/routes";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -51,7 +52,7 @@ function Navbar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={routes.home}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -106,7 +107,7 @@ function Navbar() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={routes.home}
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
