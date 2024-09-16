@@ -30,21 +30,27 @@ function Navbar() {
     null
   );
   const { data: session, status } = useSession();
- 
-  console.log(session);
-  
+
+  // console.log(session);
+  const avatarIcon = React.useMemo(() => {
+    return status === "loading" ? (
+      <Skeleton variant="circular" width={40} height={40} />
+    ) : session ? (
+      <LoggedInAvatar session={session} />
+    ) : (
+      <SignInButton />
+    );
+  }, [status]);
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
-  
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-
   return (
-    <AppBar position="static" >
+    <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <QuizIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -117,7 +123,6 @@ function Navbar() {
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
-              
             }}
           >
             ExamReady
@@ -133,11 +138,7 @@ function Navbar() {
               </Button>
             ))}
           </Box>
-          { status === "loading" ? 
-          <Skeleton variant="circular" width={40} height={40}/> : 
-              (session ? <LoggedInAvatar session={session}/> : <SignInButton/>)
-          }
- 
+          {avatarIcon}
         </Toolbar>
       </Container>
     </AppBar>

@@ -20,6 +20,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { signOut } from "next-auth/react";
 import { ListItemIcon, ListItemText } from "@mui/material";
 
+import { Account, SessionContext } from "@toolpad/core";
+
 const LoggedInAvatar = ({ session }: { session: any }) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -38,7 +40,7 @@ const LoggedInAvatar = ({ session }: { session: any }) => {
         </IconButton>
       </Tooltip>
       <Menu
-        sx={{ mt: "45px" }}
+        sx={{ mt: "45px", maxWidth:"200px"}}
         id="menu-appbar"
         anchorEl={anchorElUser}
         anchorOrigin={{
@@ -53,12 +55,17 @@ const LoggedInAvatar = ({ session }: { session: any }) => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
+        <MenuItem divider={true} sx={{ justifyContent:"center"}}>
+          <Typography variant="caption" color="textSecondary" align="center" noWrap >
+            {session.user.name}
+          </Typography>
+        </MenuItem>
         <MenuItem onClick={() => signOut()}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>
           <ListItemText>
-            <Typography textAlign="center">Sign Out</Typography>
+            <Typography variant="body2" textAlign="center">Sign Out</Typography>
           </ListItemText>
         </MenuItem>
       </Menu>
