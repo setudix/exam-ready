@@ -2,6 +2,8 @@ import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import { JWT } from "next-auth/jwt";
+import axios from 'axios';
+import routes from "@/app/routes";
 
 // Extend the built-in session types
 declare module "next-auth" {
@@ -45,29 +47,41 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({
-      token,
-      account,
-      profile,
-    }: {
-      token: JWT;
-      account: any;
-      profile?: any;
-    }) {
-      if (account && profile) {
-        token.id = profile.sub;
+
+    async jwt( {token, user, account} ){
+      
+      if (account && user) {
+      const {name, email, id} = user;
+      const provider = account?.provider;
+
+      try{
+        const response = await axios.post(routes.socialLogin,
+          {
+            name,
+            email,
+            id,
+            provider
+          });
+
+          if (response.status === 200)
+          {
+            token.accessToken = response?.data?.token;
+          }
+          else {
+            throw 401;
+          }
+        }
+        catch(e){}
       }
 
-      if (account && account.provider === "facebook") {
-        token.accessToken = account.access_token;
-        token.id = profile?.id;
-      }
       return token;
     },
+
     async session({ session, token }: { session: any; token: JWT }) {
       if (session.user) {
-        session.user.id = token.id as string;
+        session.token = token.accessToken;
       }
+      
       return session;
     },
   },
