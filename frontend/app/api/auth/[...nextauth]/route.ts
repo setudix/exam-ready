@@ -62,16 +62,18 @@ export const authOptions: NextAuthOptions = {
             id,
             provider
           });
-
+          console.log("Status: " + response.status);
           if (response.status === 200)
           {
             token.accessToken = response?.data?.token;
           }
           else {
-            throw 401;
+            throw Error("Failed");
           }
         }
-        catch(e){}
+        catch(e){
+          throw Error("Failed");
+        }
       }
 
       return token;
