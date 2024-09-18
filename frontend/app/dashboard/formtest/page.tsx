@@ -36,6 +36,9 @@ import AlarmOnIcon from "@mui/icons-material/AlarmOn";
 import AlarmOffIcon from "@mui/icons-material/AlarmOff";
 import NumbersIcon from "@mui/icons-material/Numbers";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import PaletteIcon from "@mui/icons-material/Palette";
+import { useSession } from "next-auth/react";
+import SelectColors from "./SelectColors";
 
 type FormValues = {
   examName: string;
@@ -44,6 +47,7 @@ type FormValues = {
   questionSize: number;
   promptText: string;
   userId: string;
+  examColor: string;
 };
 const FormTest = () => {
   const examCreationForm = useForm<FormValues>({
@@ -53,6 +57,7 @@ const FormTest = () => {
       examDuration: 0,
       questionSize: 15,
       promptText: "",
+      examColor: "#a3a3a3",
     },
   });
   const { register, control, handleSubmit, setValue, getValues, watch } =
@@ -62,13 +67,17 @@ const FormTest = () => {
   const [examDuration, setExamDuration] = useState<number>(0);
   const [questionSize, setQuestionSize] = useState<number>(15);
   const [promptText, setPromptText] = useState<string>("");
+  const [examColor, setExamColor] = useState<string>("#a3a3a3");
+
+  const { data: session } = useSession();
 
   useEffect(() => {
-    // console.log("state : " + isExamDurationAuto);
-    // console.log("form : " + getValues("isExamDurationAuto"));
     setValue("isExamDurationAuto", isExamDurationAuto);
   }, [isExamDurationAuto]);
 
+  useEffect(() => {
+    setValue("examColor", examColor);
+  }, [examColor]);
   const onSubmit = async (data: FormValues) => {
     console.log("before ", data);
 
@@ -187,17 +196,10 @@ const FormTest = () => {
           </Stack>
           <Fade
             in={!isExamDurationAuto}
-            // timeout={isExamDurationAuto? 1000: 0}
-            // timeout={1000}
             timeout={{ appear: 0, enter: 700, exit: 200 }}
             unmountOnExit
           >
-            <Stack
-              direction="row"
-              alignItems="center"
-              spacing={2}
-              // display={!isExamDurationAuto ? "none" : ""}
-            >
+            <Stack direction="row" alignItems="center" spacing={2}>
               <TimerIcon color="action" />
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="caption">
@@ -210,8 +212,6 @@ const FormTest = () => {
                   max={60}
                   aria-labelledby="exam-duration-slider"
                   valueLabelDisplay="auto"
-                  // disabled={getValues("isExamDurationAuto") as boolean}
-                  // {...register("examDuration")}
                 />
               </Box>
             </Stack>
@@ -220,7 +220,10 @@ const FormTest = () => {
           <Stack direction="row" alignItems="center" spacing={2}>
             <NumbersIcon color="action" />
             <Box sx={{ flexGrow: 1 }}>
-              <Typography variant="caption">Number of Questions:</Typography>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="caption">Number of Questions:</Typography>
+                <Typography variant="caption">{questionSize}</Typography>
+              </Stack>
               <Slider
                 value={questionSize}
                 // onChange={handleSliderChange}
@@ -238,6 +241,25 @@ const FormTest = () => {
               />
             </Box>
           </Stack>
+
+          {session && (
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <PaletteIcon color="action" />
+              <Box sx={{ flexGrow: 1 }}>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Tooltip title="Colors help you organize your exams">
+                    <Typography variant="subtitle1">Select A Color</Typography>
+                  </Tooltip>
+                  <SelectColors value={examColor} setValue={setExamColor} />
+                </Stack>
+              </Box>
+            </Stack>
+          )}
+
           <Stack spacing={0}>
             <Stack direction="row" alignItems="center" spacing={2}>
               <LibraryBooksIcon color="action" />
