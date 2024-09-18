@@ -21,6 +21,7 @@ import LoggedInAvatar from "./LoggedInAvatar";
 import { Skeleton } from "@mui/material";
 import SignInButton from "./SignInButton";
 import routes from "@/app/routes";
+import { useEffect } from "react";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -31,7 +32,6 @@ function Navbar() {
   );
   const { data: session, status } = useSession();
 
-  // console.log(session);
   const avatarIcon = React.useMemo(() => {
     return status === "loading" ? (
       <Skeleton variant="circular" width={40} height={40} />

@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import ThemeRegistry from "./ui/dashboard/components/ThemeRegistry";
 import Navbar from "./ui/dashboard/navbar/navbar";
+import HealthCheck from "./ui/healthcheck/HealthCheck";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <ThemeRegistry>
+            <HealthCheck />
             <Navbar />
             {children}
           </ThemeRegistry>
