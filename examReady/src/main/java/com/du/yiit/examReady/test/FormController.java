@@ -13,7 +13,7 @@ public class FormController {
 
     @PostMapping("/submit-form")
     public ResponseEntity<Object> submitForm(
-            @RequestBody FormValues fromValues
+            @RequestBody Object fromValues
     ) {
 
         // Log or process the form data as needed
@@ -29,7 +29,9 @@ public class FormController {
 
             return ResponseEntity.ok(jsonData);
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println(fromValues.toString());
+            System.out.println("error reading json");
             return ResponseEntity.internalServerError().body("Error reading JSON file");
         }
     }
