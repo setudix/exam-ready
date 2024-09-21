@@ -26,6 +26,7 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import { useSession } from "next-auth/react";
 import SelectColors from "./SelectColors";
 import examState from "./examState";
+import { useMcqDataStore } from "./mcqDataStore";
 
 type props = {
   state: any;
@@ -42,6 +43,7 @@ type FormValues = {
   examColor: string;
 };
 const ExamForm = ({ state, handleState }: props) => {
+  //////// EXAM FORM CREATION
   const examCreationForm = useForm<FormValues>({
     defaultValues: {
       examName: "",
@@ -53,8 +55,8 @@ const ExamForm = ({ state, handleState }: props) => {
     },
   });
   const { register, control, handleSubmit, setValue, getValues, watch } =
-    examCreationForm;
-
+  examCreationForm;
+  
   const [isExamDurationAuto, setIsExamDurationAuto] = useState<boolean>(true);
   const [examDuration, setExamDuration] = useState<number>(0);
   const [questionSize, setQuestionSize] = useState<number>(15);
@@ -62,7 +64,7 @@ const ExamForm = ({ state, handleState }: props) => {
   const [examColor, setExamColor] = useState<string>("#a3a3a3");
 
   const { data: session } = useSession();
-
+  
   useEffect(() => {
     setValue("isExamDurationAuto", isExamDurationAuto);
   }, [isExamDurationAuto]);
@@ -70,6 +72,12 @@ const ExamForm = ({ state, handleState }: props) => {
   useEffect(() => {
     setValue("examColor", examColor);
   }, [examColor]);
+  
+  ////////// ZUSTAND STUFF 
+  const updateMCQData = useMcqDataStore((state) => state.update);
+
+
+  ////////// ON SUBMIT 
   const onSubmit = async (data: FormValues) => {
     console.log("before ", data);
 
@@ -88,6 +96,8 @@ const ExamForm = ({ state, handleState }: props) => {
 
       const result = await response.json();
       console.log("Form submitted successfully:", result);
+
+      updateMCQData(result);
       handleState(examState.RUNNING);
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -131,6 +141,7 @@ const ExamForm = ({ state, handleState }: props) => {
       setQuestionSize(50);
     }
   };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
