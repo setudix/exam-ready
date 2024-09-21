@@ -38,7 +38,7 @@ const MCQExam = ({ examData }: prop) => {
     setOpenSnackbar(true);
   };
 
-  const handleOptionClick = (questionIndex, optionValue) => {
+  const handleOptionClick = (questionIndex:any, optionValue:any) => {
     const currentValue = getValues(`question-${questionIndex}`);
     if (currentValue === optionValue) {
       setValue(`question-${questionIndex}`, "");
@@ -47,7 +47,7 @@ const MCQExam = ({ examData }: prop) => {
     }
   };
 
-  const handleCloseSnackbar = (event, reason) => {
+  const handleCloseSnackbar = (event:any, reason:any) => {
     if (reason === "clickaway") {
       return;
     }
@@ -96,15 +96,6 @@ const MCQExam = ({ examData }: prop) => {
                           />
                         ))}
 
-                        {/* <FormControlLabel 
-                          key="optionA"
-                          value="optionA"
-                          control={
-                            <Radio 
-                            checked={field.value === "optionA"}
-                            onClick={() => handleOptionClick()}
-                          }
-                        /> */}
                       </RadioGroup>
                     )}
                   />

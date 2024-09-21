@@ -114,12 +114,9 @@ const ExamForm = ({ state, handleState }: props) => {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      // const result =  getFormattedExamInfo(resultObj);
+
       console.log("Form submitted successfully:", result);
-      // const examData = {
-      //   ...result,
-      //   options: [result.optionA, result.optionB, result.optionC, result.optionD],
-      // }
+ 
 
 
       updateMCQData(result);
