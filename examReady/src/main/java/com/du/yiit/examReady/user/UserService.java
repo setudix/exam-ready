@@ -1,5 +1,6 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.user;
 
+import com.du.yiit.examReady.utils.SocialLoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

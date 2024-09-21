@@ -1,5 +1,6 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.utils;
 
+import com.du.yiit.examReady.user.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;

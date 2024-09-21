@@ -1,5 +1,7 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.utils;
 
+import com.du.yiit.examReady.user.User;
+import com.du.yiit.examReady.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,5 +32,26 @@ public class AuthController {
         String token = tokenProvider.generateToken(user);
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    }
+
+    public static class JwtAuthenticationResponse {
+        private String token;
+
+        private final String tokenType = "Bearer";
+        public JwtAuthenticationResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public String getTokenType() {
+            return tokenType;
+        }
     }
 }

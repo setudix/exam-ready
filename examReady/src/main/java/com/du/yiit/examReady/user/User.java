@@ -1,4 +1,4 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
