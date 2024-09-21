@@ -20,7 +20,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.2",
-    "react-typed": "^2.0.12"
+    "react-typed": "^2.0.12",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@hookform/devtools": "^4.3.1",
