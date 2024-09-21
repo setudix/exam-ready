@@ -35,4 +35,21 @@ public class ExamService {
         return savedExam.getId();
     }
 
+    public int createExam(ExamRequestDTO examRequestDTO){
+        Exam exam=new Exam();
+        exam.setName(examRequestDTO.getExamName());
+        exam.setQuestionSize(examRequestDTO.getQuestionSize());
+        exam.setPrompt(examRequestDTO.getPromptText());
+        exam.setUser(this.userRepository.getById(examRequestDTO.getUserId()));
+        exam.setColor(examRequestDTO.getExamColor());
+        exam.setTaken(false);
+        if(examRequestDTO.getExamDurationAuto()){
+            exam.setDuration(examRequestDTO.getQuestionSize());
+        }
+        else {
+            exam.setDuration(examRequestDTO.getExamDuration());
+        }
+        Exam savedExam = examRepository.save(exam);
+        return savedExam.getId();
+    }
 }

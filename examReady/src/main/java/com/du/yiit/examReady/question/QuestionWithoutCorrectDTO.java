@@ -1,5 +1,8 @@
 package com.du.yiit.examReady.question;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class QuestionWithoutCorrectDTO {
     private int id;
     private String question;
@@ -9,7 +12,15 @@ public class QuestionWithoutCorrectDTO {
     private String optionD;
     private String selected;
 
+    public String[] getOptions() {
+        return options;
+    }
 
+    public void setOptions(String[] options) {
+        this.options = options;
+    }
+
+    private String[] options;
 
     public QuestionWithoutCorrectDTO(Question question){
         this.id=question.getId();
@@ -19,6 +30,8 @@ public class QuestionWithoutCorrectDTO {
         this.optionC=question.getOptionC();
         this.optionD=question.getOptionD();
         this.selected=question.getSelected();
+
+        this.options = new String[]{getOptionA(), getOptionB(), getOptionC(), getOptionD()};
     }
 
     public int getId() {

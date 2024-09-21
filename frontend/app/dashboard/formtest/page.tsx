@@ -24,12 +24,12 @@ const page = () => {
         </Container>
 
         <Container>
-          <MCQExam questions={mcqExamData} />
+          <MCQExam examData={mcqExamData} />
         </Container>
 
-        <Container>
+        {/* <Container>
           <CompletedExam questions={mcqExamData} />
-        </Container>
+        </Container> */}
       </Container>
     </>
   );
