@@ -1,4 +1,4 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.utils;
 
 public class SocialLoginRequest {
     private String name;

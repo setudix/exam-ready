@@ -1,4 +1,4 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

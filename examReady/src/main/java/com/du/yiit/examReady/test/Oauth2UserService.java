@@ -1,7 +1,7 @@
 package com.du.yiit.examReady.test;
 
-import com.du.yiit.examReady.test2.User;
-import com.du.yiit.examReady.test2.UserRepository;
+import com.du.yiit.examReady.user.User;
+import com.du.yiit.examReady.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

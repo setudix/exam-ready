@@ -1,6 +1,5 @@
-package com.du.yiit.examReady.test2;
+package com.du.yiit.examReady.user;
 
-import com.du.yiit.examReady.test2.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
