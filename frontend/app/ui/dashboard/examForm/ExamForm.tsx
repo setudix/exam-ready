@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip,
   Fade,
+  Card,
 } from "@mui/material";
 
 import React, { ChangeEvent, useEffect, useState } from "react";
@@ -27,6 +28,7 @@ import { useSession } from "next-auth/react";
 import SelectColors from "./SelectColors";
 import examState from "./examState";
 import { useMcqDataStore } from "./mcqDataStore";
+import routes from "@/app/routes";
 
 type props = {
   state: any;
@@ -55,8 +57,8 @@ const ExamForm = ({ state, handleState }: props) => {
     },
   });
   const { register, control, handleSubmit, setValue, getValues, watch } =
-  examCreationForm;
-  
+    examCreationForm;
+
   const [isExamDurationAuto, setIsExamDurationAuto] = useState<boolean>(true);
   const [examDuration, setExamDuration] = useState<number>(0);
   const [questionSize, setQuestionSize] = useState<number>(15);
@@ -64,7 +66,7 @@ const ExamForm = ({ state, handleState }: props) => {
   const [examColor, setExamColor] = useState<string>("#a3a3a3");
 
   const { data: session } = useSession();
-  
+
   useEffect(() => {
     setValue("isExamDurationAuto", isExamDurationAuto);
   }, [isExamDurationAuto]);
@@ -72,17 +74,35 @@ const ExamForm = ({ state, handleState }: props) => {
   useEffect(() => {
     setValue("examColor", examColor);
   }, [examColor]);
-  
-  ////////// ZUSTAND STUFF 
+
+  ////////// ZUSTAND STUFF
   const updateMCQData = useMcqDataStore((state) => state.update);
 
+  const getFormattedExamInfo = (responseData: any) => {
+    const result = {
+      exam: responseData.exam,
+      questions: Array.of(responseData.questions).forEach(element => {
+        return {...element, options: [element.optionA, element.optionB, element.optionC, element.optionD]};
+      }), 
+    };
+    return result;
+  }
 
-  ////////// ON SUBMIT 
+  ////////// ON SUBMIT
+
   const onSubmit = async (data: FormValues) => {
-    console.log("before ", data);
+    const userId = session?.user.id;
+    console.log("userid: ", userId);
+    if (userId) {
+      setValue("userId", userId);
+      data.userId = userId;
+      // console.log("userid: ", data);
+    }
+
+    // console.log("before ", data);
 
     try {
-      const response = await fetch("http://localhost:8080/api/submit-form", {
+      const response = await fetch(routes.createDummyExam, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,9 +113,14 @@ const ExamForm = ({ state, handleState }: props) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
       const result = await response.json();
+      // const result =  getFormattedExamInfo(resultObj);
       console.log("Form submitted successfully:", result);
+      // const examData = {
+      //   ...result,
+      //   options: [result.optionA, result.optionB, result.optionC, result.optionD],
+      // }
+
 
       updateMCQData(result);
       handleState(examState.RUNNING);
@@ -148,170 +173,172 @@ const ExamForm = ({ state, handleState }: props) => {
         <Box
           sx={{
             width: "100%",
-            maxWidth: { xs: 360, md: 400, lg: 440 },
+            maxWidth: { xs: 360, md: 440, lg: 740 },
             margin: "auto",
             marginTop: "2rem",
           }}
         >
-          <Stack direction="column" spacing={3}>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <ArticleIcon color="action" />
-              <Box sx={{ flexGrow: 1 }}>
-                {/* <Typography variant="caption">Exam Name:</Typography> */}
-                <TextField
-                  fullWidth
-                  placeholder="Enter the name of the exam"
-                  variant="outlined"
-                  label="Exam Name"
-                  {...register("examName")}
-                />
-              </Box>
-            </Stack>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              {isExamDurationAuto ? (
-                <AlarmOffIcon color="action" />
-              ) : (
-                <AlarmOnIcon color="action" />
-              )}
-              <Box sx={{ flexGrow: 1 }}>
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Tooltip title="Automatic duration means each question will have 1 minute">
-                    <Typography variant="subtitle1">
-                      Automatic Exam Duration:
-                    </Typography>
-                  </Tooltip>
-                  <Switch
-                    defaultChecked
-                    value={isExamDurationAuto}
-                    {...register("isExamDurationAuto", {
-                      onChange: (e) => {
-                        setIsExamDurationAuto((pv) => !pv);
-                        // console.log("from onchange: " + isExamDurationAuto);
-                      },
-                    })}
-                  />
-                </Stack>
-              </Box>
-            </Stack>
-            <Fade
-              in={!isExamDurationAuto}
-              timeout={{ appear: 0, enter: 700, exit: 200 }}
-              unmountOnExit
-            >
+          {/* <Card sx={{margin:4, padding:4}}> */}
+            <Stack direction="column" spacing={3}>
               <Stack direction="row" alignItems="center" spacing={2}>
-                <TimerIcon color="action" />
+                <ArticleIcon color="action" />
                 <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="caption">
-                    {"Exam Duration (Minutes)"}
-                  </Typography>
-                  <Slider
-                    value={examDuration}
-                    onChange={handleDurationSliderChange}
-                    min={1}
-                    max={60}
-                    aria-labelledby="exam-duration-slider"
-                    valueLabelDisplay="auto"
+                  {/* <Typography variant="caption">Exam Name:</Typography> */}
+                  <TextField
+                    fullWidth
+                    placeholder="Enter the name of the exam"
+                    variant="outlined"
+                    label="Exam Name"
+                    {...register("examName")}
                   />
                 </Box>
               </Stack>
-            </Fade>
-
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <NumbersIcon color="action" />
-              <Box sx={{ flexGrow: 1 }}>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography variant="caption">
-                    Number of Questions:
-                  </Typography>
-                  <Typography variant="caption">{questionSize}</Typography>
-                </Stack>
-                <Slider
-                  value={questionSize}
-                  // onChange={handleSliderChange}
-                  min={5}
-                  max={50}
-                  step={5}
-                  marks
-                  valueLabelDisplay="auto"
-                  {...register("questionSize", {
-                    onChange: (e) => {
-                      const newValue: number = Number(e?.target.value);
-                      handleSliderChange(e, newValue);
-                    },
-                  })}
-                />
-              </Box>
-            </Stack>
-
-            {session && (
               <Stack direction="row" alignItems="center" spacing={2}>
-                <PaletteIcon color="action" />
+                {isExamDurationAuto ? (
+                  <AlarmOffIcon color="action" />
+                ) : (
+                  <AlarmOnIcon color="action" />
+                )}
                 <Box sx={{ flexGrow: 1 }}>
                   <Stack
                     direction="row"
-                    alignItems="center"
                     justifyContent="space-between"
+                    alignItems="center"
                   >
-                    <Tooltip title="Colors help you organize your exams">
+                    <Tooltip title="Automatic duration means each question will have 1 minute">
                       <Typography variant="subtitle1">
-                        Select A Color
+                        Automatic Exam Duration:
                       </Typography>
                     </Tooltip>
-                    <SelectColors value={examColor} setValue={setExamColor} />
-                  </Stack>
-                </Box>
-              </Stack>
-            )}
-
-            <Stack spacing={0}>
-              <Stack direction="row" alignItems="center" spacing={2}>
-                <LibraryBooksIcon color="action" />
-                <Box sx={{ flexGrow: 1 }}>
-                  <Stack>
-                    <TextField
-                      value={promptText}
-                      fullWidth
-                      multiline
-                      minRows={1}
-                      maxRows={7}
-                      label="Enter the text prompt"
-                      placeholder="Enter the text prompt here"
-                      variant="outlined"
-                      {...register("promptText", {
-                        onChange: (e) => setPromptText(e.target.value),
+                    <Switch
+                      defaultChecked
+                      value={isExamDurationAuto}
+                      {...register("isExamDurationAuto", {
+                        onChange: (e) => {
+                          setIsExamDurationAuto((pv) => !pv);
+                          // console.log("from onchange: " + isExamDurationAuto);
+                        },
                       })}
                     />
                   </Stack>
                 </Box>
               </Stack>
-              <Box display="flex" flexDirection="row-reverse">
-                <Typography variant="caption" color="text.secondary">
-                  {promptText.length +
-                    (promptText.length < 2 ? " character" : " characters")}
-                </Typography>
-              </Box>
-            </Stack>
-
-            <Stack
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={2}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                startIcon={<PublishIcon />}
+              <Fade
+                in={!isExamDurationAuto}
+                timeout={{ appear: 0, enter: 700, exit: 200 }}
+                unmountOnExit
               >
-                Submit
-              </Button>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <TimerIcon color="action" />
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Typography variant="caption">
+                      {"Exam Duration (Minutes)"}
+                    </Typography>
+                    <Slider
+                      value={examDuration}
+                      onChange={handleDurationSliderChange}
+                      min={1}
+                      max={60}
+                      aria-labelledby="exam-duration-slider"
+                      valueLabelDisplay="auto"
+                    />
+                  </Box>
+                </Stack>
+              </Fade>
+
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <NumbersIcon color="action" />
+                <Box sx={{ flexGrow: 1 }}>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography variant="caption">
+                      Number of Questions:
+                    </Typography>
+                    <Typography variant="caption">{questionSize}</Typography>
+                  </Stack>
+                  <Slider
+                    value={questionSize}
+                    // onChange={handleSliderChange}
+                    min={5}
+                    max={50}
+                    step={5}
+                    marks
+                    valueLabelDisplay="auto"
+                    {...register("questionSize", {
+                      onChange: (e) => {
+                        const newValue: number = Number(e?.target.value);
+                        handleSliderChange(e, newValue);
+                      },
+                    })}
+                  />
+                </Box>
+              </Stack>
+
+              {session && (
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <PaletteIcon color="action" />
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Tooltip title="Colors help you organize your exams">
+                        <Typography variant="subtitle1">
+                          Select A Color
+                        </Typography>
+                      </Tooltip>
+                      <SelectColors value={examColor} setValue={setExamColor} />
+                    </Stack>
+                  </Box>
+                </Stack>
+              )}
+
+              <Stack spacing={0}>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <LibraryBooksIcon color="action" />
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Stack>
+                      <TextField
+                        value={promptText}
+                        fullWidth
+                        multiline
+                        minRows={1}
+                        maxRows={7}
+                        label="Enter the text prompt"
+                        placeholder="Enter the text prompt here"
+                        variant="outlined"
+                        {...register("promptText", {
+                          onChange: (e) => setPromptText(e.target.value),
+                        })}
+                      />
+                    </Stack>
+                  </Box>
+                </Stack>
+                <Box display="flex" flexDirection="row-reverse">
+                  <Typography variant="caption" color="text.secondary">
+                    {promptText.length +
+                      (promptText.length < 2 ? " character" : " characters")}
+                  </Typography>
+                </Box>
+              </Stack>
+
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              >
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  startIcon={<PublishIcon />}
+                >
+                  Submit
+                </Button>
+              </Stack>
             </Stack>
-          </Stack>
+          {/* </Card> */}
         </Box>
       </form>
     </>

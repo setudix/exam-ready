@@ -1,13 +1,15 @@
 import { create } from "zustand";
+import ExamDataType from "./types/ExamDataType";
 
-interface DataStore {
-  data: any;
+
+type DataStore = {
+  data?: ExamDataType;
   update: ( newData : any) => void;
 }
 
 export const useMcqDataStore = create<DataStore>((set) => ({
-  data: [],
-  update: (newData: any) => {
+  data: undefined,
+  update: (newData: ExamDataType) => {
     set({data: newData});
   } 
 }));

@@ -53,6 +53,7 @@ export const authOptions: NextAuthOptions = {
       if (account && user) {
       const {name, email, id} = user;
       const provider = account?.provider;
+      token.id = id;
 
       try{
         const response = await axios.post(routes.socialLogin,
@@ -82,6 +83,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }: { session: any; token: JWT }) {
       if (session.user) {
         session.token = token.accessToken;
+        session.user.id = token.id;
       }
       
       return session;

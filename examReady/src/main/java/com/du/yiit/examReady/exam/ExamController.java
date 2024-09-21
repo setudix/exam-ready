@@ -6,10 +6,7 @@ import com.du.yiit.examReady.question.QuestionWithoutCorrectDTO;
 import com.du.yiit.examReady.utils.PromptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
@@ -41,6 +38,18 @@ public class ExamController {
         return ResponseEntity.ok(new CreateExamResponse(examWithoutPromptDTO,questionWithoutCorrectDTOS));
     }
 
-
+    @PostMapping("/create")
+    public ResponseEntity<CreateExamResponse> create(@RequestBody ExamRequestDTO examRequestDTO){
+        int exam_id = examService.createExam(examRequestDTO);
+        ExamWithoutPromptDTO examWithoutPromptDTO = new ExamWithoutPromptDTO(examRepository.getById(exam_id));
+        Mono<Question[]> monoQuestions = promptService.generateQuestions(examRequestDTO.getPromptText(), examRequestDTO.getQuestionSize(), exam_id);
+        Question[] questions = monoQuestions.block();
+        List<QuestionWithoutCorrectDTO> questionWithoutCorrectDTOS = new ArrayList<QuestionWithoutCorrectDTO>();
+        for (Question question : questions) {
+            QuestionWithoutCorrectDTO questionWithoutCorrectDTO = new QuestionWithoutCorrectDTO(question);
+            questionWithoutCorrectDTOS.add(questionWithoutCorrectDTO);
+        }
+        return ResponseEntity.ok(new CreateExamResponse(examWithoutPromptDTO,questionWithoutCorrectDTOS));
+    }
 
 }

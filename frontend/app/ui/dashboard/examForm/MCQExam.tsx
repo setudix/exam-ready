@@ -15,21 +15,22 @@ import {
   Container,
 } from "@mui/material";
 import ExamBar from "./ExamBar";
+import ExamDataType from "./types/ExamDataType";
 
 
 type prop = {
-  questions: Array<any>;
+  examData: ExamDataType;
 };
-const MCQExam = ({ questions }: prop) => {
+const MCQExam = ({ examData }: prop) => {
   const { control, handleSubmit, setValue, getValues } = useForm();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
 
   const onSubmit = (data: any) => {
-    const formattedData = questions.map((q, index) => ({
-      question: q.question,
+    const formattedData = examData?.questions && examData?.questions.map((q, index) => ({
+      questionId: q.id,
       selectedOption: data[`question-${index}`] || null,
-      options: q.options,
+      // options: q.options,
     }));
 
     console.log(JSON.stringify(formattedData, null, 2));
@@ -65,7 +66,7 @@ const MCQExam = ({ questions }: prop) => {
             MCQ Exam
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {questions.map((q, index) => (
+            { examData?.questions != undefined && examData.questions.map((q:any, index) => (
               <Paper
                 key={index}
                 sx={{marginBottom:4, padding:4}}
@@ -81,7 +82,7 @@ const MCQExam = ({ questions }: prop) => {
                     defaultValue=""
                     render={({ field }) => (
                       <RadioGroup {...field}>
-                        {q.options.map((option, optionIndex) => (
+                        {q.options.map((option: Array<string>, optionIndex: number) => (
                           <FormControlLabel
                             key={optionIndex}
                             value={option}
@@ -94,6 +95,16 @@ const MCQExam = ({ questions }: prop) => {
                             label={option}
                           />
                         ))}
+
+                        {/* <FormControlLabel 
+                          key="optionA"
+                          value="optionA"
+                          control={
+                            <Radio 
+                            checked={field.value === "optionA"}
+                            onClick={() => handleOptionClick()}
+                          }
+                        /> */}
                       </RadioGroup>
                     )}
                   />

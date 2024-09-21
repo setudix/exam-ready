@@ -18,7 +18,7 @@ public class FormController {
 
         // Log or process the form data as needed
 //        System.out.println("Received form data - Name: " + name + ", ID: " + id + ", Age: " + age);
-        System.out.println("received");
+//        System.out.println("received");
         // Read JSON data from file
         try {
             ClassPathResource resource = new ClassPathResource("data.json");
