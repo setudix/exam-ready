@@ -34,20 +34,20 @@ const Timer = ({ initialTime = 0 }: TimerProps) => {
         ""
       ) : (
         <Box
-          sx={{
-            position: "fixed",
-            top: { xs: 16, sm: 24, md: 32 },
-            right: { xs: 16, sm: 24, md: 32 },
-            padding: { xs: 2, sm: 3, md: 4 },
-            borderRadius: 2,
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            backdropFilter: "blur(5px)",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            zIndex: "tooltip",
-          }}
+          // sx={{
+          //   position: "fixed",
+          //   top: { xs: 16, sm: 24, md: 32 },
+          //   right: { xs: 16, sm: 24, md: 32 },
+          //   padding: { xs: 2, sm: 3, md: 4 },
+          //   borderRadius: 2,
+          //   backgroundColor: "rgba(255, 255, 255, 0.1)",
+          //   backdropFilter: "blur(5px)",
+          //   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          //   zIndex: "tooltip",
+          // }}
         >
           <Typography
-            variant="h5"
+            variant="body1"
             sx={{
               fontWeight: "bold",
               color: isLessThanMinute ? "error.main" : "success.main",

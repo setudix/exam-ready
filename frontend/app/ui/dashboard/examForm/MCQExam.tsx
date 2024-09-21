@@ -12,12 +12,15 @@ import {
   Paper,
   Snackbar,
   Alert,
+  Container,
 } from "@mui/material";
+import ExamBar from "./ExamBar";
+
 
 type prop = {
   questions: Array<any>;
 };
-const MCQExam = ({ questions } : prop) => {
+const MCQExam = ({ questions }: prop) => {
   const { control, handleSubmit, setValue, getValues } = useForm();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
@@ -52,65 +55,75 @@ const MCQExam = ({ questions } : prop) => {
 
   return (
     <>
-      <Box className="max-w-2xl mx-auto mt-8 p-4">
-        <Typography variant="h4" className="mb-4">
-          MCQ Exam
-        </Typography>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {questions.map((q, index) => (
-            <Paper key={index} className="mb-4 p-4">
-              <FormControl component="fieldset" className="w-full">
-                <FormLabel component="legend" className="mb-2">
-                  {`${index + 1}. ${q.question}`}
-                </FormLabel>
-                <Controller
-                  name={`question-${index}`}
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <RadioGroup {...field}>
-                      {q.options.map((option, optionIndex) => (
-                        <FormControlLabel
-                          key={optionIndex}
-                          value={option}
-                          control={
-                            <Radio
-                            checked={field.value === option}
-                            onClick={() => handleOptionClick(index, option)}
-                            />
-                          }
-                          label={option}
-                        />
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
-              </FormControl>
-            </Paper>
-          ))}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className="mt-4"
-          >
-            Submit
-          </Button>
-        </form>
-        <Snackbar
-          open={openSnackbar}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
+      <Container sx={{height:"100%"}}>
+        <ExamBar />
+        <Box 
+        // className="max-w-2xl mx-auto mt-8 p-4"
+        sx={{flexGrow:1, marginBottom:4}}
         >
-          <Alert
+          <Typography variant="h4" className="mb-4">
+            MCQ Exam
+          </Typography>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {questions.map((q, index) => (
+              <Paper
+                key={index}
+                sx={{marginBottom:4, padding:4}}
+                
+              >
+                <FormControl component="fieldset" className="w-full">
+                  <FormLabel component="legend" className="mb-2">
+                    {`${index + 1}. ${q.question}`}
+                  </FormLabel>
+                  <Controller
+                    name={`question-${index}`}
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <RadioGroup {...field}>
+                        {q.options.map((option, optionIndex) => (
+                          <FormControlLabel
+                            key={optionIndex}
+                            value={option}
+                            control={
+                              <Radio
+                                checked={field.value === option}
+                                onClick={() => handleOptionClick(index, option)}
+                              />
+                            }
+                            label={option}
+                          />
+                        ))}
+                      </RadioGroup>
+                    )}
+                  />
+                </FormControl>
+              </Paper>
+            ))}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className="mt-4"
+            >
+              Submit
+            </Button>
+          </form>
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={6000}
             onClose={handleCloseSnackbar}
-            severity="success"
-            sx={{ width: "100%" }}
           >
-            Exam submitted successfully!
-          </Alert>
-        </Snackbar>
-      </Box>
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              Exam submitted successfully!
+            </Alert>
+          </Snackbar>
+        </Box>
+      </Container>
     </>
   );
 };

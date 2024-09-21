@@ -1,4 +1,5 @@
 "use client";
+import CompletedExam from "@/app/ui/dashboard/exam-completed/CompletedExam";
 import ExamForm from "@/app/ui/dashboard/examForm/ExamForm";
 import MCQExam from "@/app/ui/dashboard/examForm/MCQExam";
 import examState from "@/app/ui/dashboard/examForm/examState";
@@ -12,17 +13,23 @@ const page = () => {
     setState(() => val);
   };
 
-  const mcqExamData = useMcqDataStore(state => state.data);
+  const mcqExamData = useMcqDataStore((state) => state.data);
   return (
     <>
-      <Container
-      //  sx={{display: state === examState.EDITING ? "" :"none"}}
-       >
-        <ExamForm state={state} handleState={handleState} />
-      </Container>
+      <Container sx={{ height: "100%" }}>
+        <Container
+        //  sx={{display: state === examState.EDITING ? "" :"none"}}
+        >
+          <ExamForm state={state} handleState={handleState} />
+        </Container>
 
-      <Container>
-        <MCQExam questions={mcqExamData} />
+        <Container>
+          <MCQExam questions={mcqExamData} />
+        </Container>
+
+        <Container>
+          <CompletedExam questions={mcqExamData} />
+        </Container>
       </Container>
     </>
   );
