@@ -16,7 +16,8 @@ import {
 } from "@mui/material";
 import ExamBar from "./ExamBar";
 import ExamDataType from "./types/ExamDataType";
-
+import axios from "axios";
+import routes from "@/app/routes";
 
 type prop = {
   examData: ExamDataType;
@@ -26,19 +27,48 @@ const MCQExam = ({ examData }: prop) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
 
-  const onSubmit = (data: any) => {
-    const formattedData = examData?.questions && examData?.questions.map((q, index) => ({
-      questionId: q.id,
-      selectedOption: data[`question-${index}`] || null,
-      // options: q.options,
-    }));
+  const getMCQOption = (question: any, selectedOption: string | null) => {
+    if (selectedOption === null || selectedOption === undefined) {
+      return null;
+    }
+    if (selectedOption === question.optionA) return "optionA";
+    if (selectedOption === question.optionB) return "optionB";
+    if (selectedOption === question.optionC) return "optionC";
+    if (selectedOption === question.optionD) return "optionD";
+
+    return null;
+  };
+  const onSubmit = async (data: any) => {
+    const questions: any = 
+      examData?.questions &&
+        examData?.questions.map((q, index) => ({
+          questionId: q.id,
+          selectedOption: getMCQOption(q, data[`question-${index}`]),
+        }));
+    // var formattedData: any =
+    //   examData?.questions &&
+    //   examData?.questions.map((q, index) => ({
+    //     questionId: q.id,
+    //     selectedOption: getMCQOption(q, data[`question-${index}`]),
+    //     // options: q.options,
+    //   }));
+
+    const formattedData = {
+      questions,
+      examId: examData.exam?.id,
+    };
+
+    const response = await axios.post(routes.submitMCQExam, formattedData);
 
     console.log(JSON.stringify(formattedData, null, 2));
     setSubmittedData(formattedData);
     setOpenSnackbar(true);
+
+    console.log("response", response.data);
+
   };
 
-  const handleOptionClick = (questionIndex:any, optionValue:any) => {
+  const handleOptionClick = (questionIndex: any, optionValue: any) => {
     const currentValue = getValues(`question-${questionIndex}`);
     if (currentValue === optionValue) {
       setValue(`question-${questionIndex}`, "");
@@ -47,7 +77,7 @@ const MCQExam = ({ examData }: prop) => {
     }
   };
 
-  const handleCloseSnackbar = (event:any, reason:any) => {
+  const handleCloseSnackbar = (event: any, reason: any) => {
     if (reason === "clickaway") {
       return;
     }
@@ -56,52 +86,52 @@ const MCQExam = ({ examData }: prop) => {
 
   return (
     <>
-      <Container sx={{height:"100%"}}>
+      <Container sx={{ height: "100%" }}>
         <ExamBar />
-        <Box 
-        // className="max-w-2xl mx-auto mt-8 p-4"
-        sx={{flexGrow:1, marginBottom:4}}
+        <Box
+          // className="max-w-2xl mx-auto mt-8 p-4"
+          sx={{ flexGrow: 1, marginBottom: 4 }}
         >
           <Typography variant="h4" className="mb-4">
             MCQ Exam
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
-            { examData?.questions != undefined && examData.questions.map((q:any, index) => (
-              <Paper
-                key={index}
-                sx={{marginBottom:4, padding:4}}
-                
-              >
-                <FormControl component="fieldset" className="w-full">
-                  <FormLabel component="legend" className="mb-2">
-                    {`${index + 1}. ${q.question}`}
-                  </FormLabel>
-                  <Controller
-                    name={`question-${index}`}
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <RadioGroup {...field}>
-                        {q.options.map((option: Array<string>, optionIndex: number) => (
-                          <FormControlLabel
-                            key={optionIndex}
-                            value={option}
-                            control={
-                              <Radio
-                                checked={field.value === option}
-                                onClick={() => handleOptionClick(index, option)}
+            {examData?.questions != undefined &&
+              examData.questions.map((q: any, index) => (
+                <Paper key={index} sx={{ marginBottom: 4, padding: 4 }}>
+                  <FormControl component="fieldset" className="w-full">
+                    <FormLabel component="legend" className="mb-2">
+                      {`${index + 1}. ${q.question}`}
+                    </FormLabel>
+                    <Controller
+                      name={`question-${index}`}
+                      control={control}
+                      defaultValue=""
+                      render={({ field }) => (
+                        <RadioGroup {...field}>
+                          {q.options.map(
+                            (option: Array<string>, optionIndex: number) => (
+                              <FormControlLabel
+                                key={optionIndex}
+                                value={option}
+                                control={
+                                  <Radio
+                                    checked={field.value === option}
+                                    onClick={() =>
+                                      handleOptionClick(index, option)
+                                    }
+                                  />
+                                }
+                                label={option}
                               />
-                            }
-                            label={option}
-                          />
-                        ))}
-
-                      </RadioGroup>
-                    )}
-                  />
-                </FormControl>
-              </Paper>
-            ))}
+                            )
+                          )}
+                        </RadioGroup>
+                      )}
+                    />
+                  </FormControl>
+                </Paper>
+              ))}
             <Button
               type="submit"
               variant="contained"

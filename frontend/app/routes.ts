@@ -9,6 +9,7 @@ const routes = {
   healthCheck: `${serverUrl}${port}/api/health`,
   createExam: `${serverUrl}${port}/api/exam/create`,
   createDummyExam: `${serverUrl}${port}/api/submit-form`,
+  submitMCQExam: `${serverUrl}${port}/api/exam/submit-exam`,
 };
 
 
