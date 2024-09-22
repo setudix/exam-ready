@@ -43,6 +43,8 @@ public class ExamService {
         exam.setUser(this.userRepository.getById(examRequestDTO.getUserId()));
         exam.setColor(examRequestDTO.getExamColor());
         exam.setTaken(false);
+        exam.setExamDurationInfinite(examRequestDTO.isExamDurationInfinite());
+        exam.setAllowNegativeMarking(examRequestDTO.isAllowNegativeMarking());
         if(examRequestDTO.getExamDurationAuto()){
             exam.setDuration(examRequestDTO.getQuestionSize());
         }

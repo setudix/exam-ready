@@ -30,19 +30,6 @@ public class ExamController {
     @Autowired
     ExamRepository examRepository;
 
-    @GetMapping("/create")
-    public ResponseEntity<CreateExamResponse> create(@RequestParam String examName, @RequestParam boolean isExamDurationAuto, @RequestParam int examDuration, @RequestParam String promptText, @RequestParam int questionSize, @RequestParam String userId, @RequestParam String examColor) {
-        int exam_id = examService.createExam(examName, isExamDurationAuto, examDuration, questionSize, promptText, userId, examColor);
-        ExamWithoutPromptDTO examWithoutPromptDTO = new ExamWithoutPromptDTO(examRepository.getById(exam_id));
-        Mono<Question[]> monoQuestions = promptService.generateQuestions(promptText, questionSize, exam_id);
-        Question[] questions = monoQuestions.block();
-        List<QuestionWithoutCorrectDTO> questionWithoutCorrectDTOS = new ArrayList<QuestionWithoutCorrectDTO>();
-        for (Question question : questions) {
-            QuestionWithoutCorrectDTO questionWithoutCorrectDTO = new QuestionWithoutCorrectDTO(question);
-            questionWithoutCorrectDTOS.add(questionWithoutCorrectDTO);
-        }
-        return ResponseEntity.ok(new CreateExamResponse(examWithoutPromptDTO,questionWithoutCorrectDTOS));
-    }
 
     @PostMapping("/create")
     public ResponseEntity<CreateExamResponse> create(@RequestBody ExamRequestDTO examRequestDTO){
