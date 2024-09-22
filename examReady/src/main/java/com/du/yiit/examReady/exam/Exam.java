@@ -36,6 +36,15 @@ import jakarta.persistence.*;
         @Column(name = "taken", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
         private boolean taken;
 
+        @Column (name = "allowNegativeMarking", nullable=false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+        private boolean allowNegativeMarking;
+
+        @Column (name = "isExamDurationInfinite", nullable=false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+        private boolean isExamDurationInfinite;
+
+        @Column(name = "score", nullable = true)
+        private double score;
+
     public Integer getId() {
         return id;
     }
@@ -108,15 +117,27 @@ import jakarta.persistence.*;
         this.taken = taken;
     }
 
-    public Integer getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
-    @Column(name = "score", nullable = true)
-        private Integer score;
-
+    public boolean isAllowNegativeMarking() {
+        return allowNegativeMarking;
     }
+
+    public void setAllowNegativeMarking(boolean allowNegativeMarking) {
+        this.allowNegativeMarking = allowNegativeMarking;
+    }
+
+    public boolean isExamDurationInfinite() {
+        return isExamDurationInfinite;
+    }
+
+    public void setExamDurationInfinite(boolean examDurationInfinite) {
+        isExamDurationInfinite = examDurationInfinite;
+    }
+}
