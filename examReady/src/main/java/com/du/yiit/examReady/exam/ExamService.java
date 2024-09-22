@@ -45,6 +45,7 @@ public class ExamService {
         exam.setTaken(false);
         exam.setExamDurationInfinite(examRequestDTO.isExamDurationInfinite());
         exam.setAllowNegativeMarking(examRequestDTO.isAllowNegativeMarking());
+        exam.setNumberOfAnswered(0);
         if(examRequestDTO.getExamDurationAuto()){
             exam.setDuration(examRequestDTO.getQuestionSize());
         }
