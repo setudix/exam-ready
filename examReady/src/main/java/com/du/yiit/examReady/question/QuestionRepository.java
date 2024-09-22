@@ -7,8 +7,7 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
-    // Find all questions by exam
-    //List<Question> findByExamId(String examId);
+    List<Question> findByExamId(int examId);
 
     // Find a question by id
     //Question findById(int id);
