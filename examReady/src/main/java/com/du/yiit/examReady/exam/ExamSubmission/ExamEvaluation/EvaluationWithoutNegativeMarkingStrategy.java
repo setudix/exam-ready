@@ -9,16 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class EvaluationWithoutNegMarkingStrategy implements EvaluationStrategy {
+public class EvaluationWithoutNegativeMarkingStrategy implements EvaluationStrategy {
     @Autowired
     ExamRepository examRepository;
     @Autowired
     QuestionRepository questionRepository;
+
+    public EvaluationWithoutNegativeMarkingStrategy(ExamRepository examRepository, QuestionRepository questionRepository) {
+        this.examRepository = examRepository;
+        this.questionRepository = questionRepository;
+    }
+
     @Override
     public double evaluate(int examId) {
         Exam exam = examRepository.getById(examId);
         List<Question> questions = questionRepository.findByExamId(examId);
-        ExamUtils examUtils=new ExamUtils();
+        ExamUtils examUtils=new ExamUtils(questionRepository);
 
         return examUtils.getNumberOfCorrectAnswers(questions);
     }

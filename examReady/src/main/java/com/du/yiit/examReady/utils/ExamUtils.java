@@ -11,13 +11,15 @@ public class ExamUtils {
     @Autowired
     QuestionRepository questionRepository;
 
-    public ExamUtils(){}
+    public ExamUtils(QuestionRepository questionRepository){
+        this.questionRepository=questionRepository;
+    }
     public int getNumberOfAnswered(Exam exam){
         int numberOfAnswered=0;
         List<Question> questions=questionRepository.findByExamId(exam.getId());
 
         for (Question question: questions){
-            if(!question.getSelected().equals(null)){
+            if(question.getSelected()!=null){
                 numberOfAnswered++;
             }
         }
@@ -34,7 +36,7 @@ public class ExamUtils {
         return numberOfCorrectAnswers;
     }
     public boolean isCorrect(Question question){
-        if(question.getSelected().equals(question.getCorrectAnswer())){
+        if(question.getSelected()!=null && question.getSelected().equals(question.getCorrectAnswer())){
             return true;
         }
         else return false;

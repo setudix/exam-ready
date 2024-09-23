@@ -15,15 +15,21 @@ public class EvaluationWithNegativeMarkingStrategy implements EvaluationStrategy
     ExamRepository examRepository;
     @Autowired
     QuestionRepository questionRepository;
+
+    public EvaluationWithNegativeMarkingStrategy(ExamRepository examRepository, QuestionRepository questionRepository) {
+        this.examRepository = examRepository;
+        this.questionRepository = questionRepository;
+    }
+
     @Override
     public double evaluate(int examId) {
         Exam exam = examRepository.getById(examId);
         List<Question> questions = questionRepository.findByExamId(examId);
         double score=0;
-        ExamUtils examUtils=new ExamUtils();
+        ExamUtils examUtils=new ExamUtils(questionRepository);
 
         int numberOfCorrectAnswers = examUtils.getNumberOfCorrectAnswers(questions);
-        int numberOfIncorrectAnswers = exam.getQuestionSize()-numberOfCorrectAnswers;
+        int numberOfIncorrectAnswers = examUtils.getNumberOfAnswered(exam)-numberOfCorrectAnswers;
 
         score = numberOfCorrectAnswers - 0.25*numberOfIncorrectAnswers;
         return score;
