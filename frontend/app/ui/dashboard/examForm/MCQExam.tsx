@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Radio,
@@ -18,14 +18,21 @@ import ExamBar from "./ExamBar";
 import ExamDataType from "./types/ExamDataType";
 import axios from "axios";
 import routes from "@/app/routes";
+import { UseMCQDataStore } from "./mcqDataStore";
 
 type prop = {
-  examData: ExamDataType;
+  // examData: ExamDataType;
+  loading: boolean,
 };
-const MCQExam = ({ examData }: prop) => {
+const MCQExam = ({loading} : prop ) => {
   const { control, handleSubmit, setValue, getValues } = useForm();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
+  var examData = UseMCQDataStore(s => s.data);
+
+  // useEffect(() => {
+  //   examData = UseMCQDataStore(s => s.data);
+  // }, [loading]);
 
   const getMCQOption = (question: any, selectedOption: string | null) => {
     if (selectedOption === null || selectedOption === undefined) {
@@ -45,13 +52,6 @@ const MCQExam = ({ examData }: prop) => {
           questionId: q.id,
           selectedOption: getMCQOption(q, data[`question-${index}`]),
         }));
-    // var formattedData: any =
-    //   examData?.questions &&
-    //   examData?.questions.map((q, index) => ({
-    //     questionId: q.id,
-    //     selectedOption: getMCQOption(q, data[`question-${index}`]),
-    //     // options: q.options,
-    //   }));
 
     const formattedData = {
       questions,
@@ -87,7 +87,7 @@ const MCQExam = ({ examData }: prop) => {
   return (
     <>
       <Container sx={{ height: "100%" }}>
-        <ExamBar />
+        <ExamBar/>
         <Box
           // className="max-w-2xl mx-auto mt-8 p-4"
           sx={{ flexGrow: 1, marginBottom: 4 }}

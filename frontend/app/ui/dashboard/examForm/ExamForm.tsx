@@ -28,22 +28,20 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import { useSession } from "next-auth/react";
 import SelectColors from "./SelectColors";
 import examState from "./examState";
-import { useMcqDataStore } from "./mcqDataStore";
+import { UseMCQDataStore } from "./mcqDataStore";
 import routes from "@/app/routes";
 import HourglassDisabledIcon from "@mui/icons-material/HourglassDisabled";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import ReportIcon from "@mui/icons-material/Report";
 import ReportOffIcon from "@mui/icons-material/ReportOff";
 
-
-import {yupResolver} from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { UseExamStore } from "./examStateStore";
 
 type props = {
-  state: any;
-  handleState: (val: examState) => void;
+  handleLoading: (val: boolean) => void;
 };
-
 
 type FormValues = {
   examName: string;
@@ -60,8 +58,8 @@ const schema = yup.object({
   allowNegativeMarking: yup.boolean(),
   isExamDurationInfinite: yup.boolean(),
   isExamDurationAuto: yup.boolean(),
-})
-const ExamForm = ({ state, handleState }: props) => {
+});
+const ExamForm = ({ handleLoading }: props) => {
   //////// EXAM FORM CREATION
   const examCreationForm = useForm<FormValues>({
     defaultValues: {
@@ -86,10 +84,11 @@ const ExamForm = ({ state, handleState }: props) => {
   const [examColor, setExamColor] = useState<string>("#a3a3a3");
   const [isExamDurationInfinite, setExamDurationInfinite] =
     useState<boolean>(false);
-  const [allowNegativeMarking, setAllowNegativeMarking] =
-    useState(false);
+  const [allowNegativeMarking, setAllowNegativeMarking] = useState(false);
 
   const { data: session } = useSession();
+
+  const handleState = UseExamStore(s => s.update);
 
   useEffect(() => {
     setValue("isExamDurationAuto", isExamDurationAuto as boolean);
@@ -108,24 +107,34 @@ const ExamForm = ({ state, handleState }: props) => {
   //   console.log("--- : ", isExamDurationInfinite);
   // },[isExamDurationInfinite])
   ////////// ZUSTAND STUFF
-  const updateMCQData = useMcqDataStore((state) => state.update);
+  const updateMCQData = UseMCQDataStore((state) => state.update);
+  
+
+  ////// Getting Session
+
+  const getUserId = () => new Promise((resolve, reject) => {
+    if (session) {
+      resolve(session.user.id)
+    } else {
+      reject(-1);
+    }
+  })
 
   ////////// ON SUBMIT
 
   const onSubmit = async (data: FormValues) => {
-    const userId = session?.user.id;
-    console.log("userid: ", userId);
-    if (userId) {
-      setValue("userId", userId);
-      data.userId = userId;
-      // console.log("userid: ", data);
-    }
-
+    // console.log("userid: ", userId);
     console.log("before ", data);
-    console.log("type: ", typeof(data.allowNegativeMarking));
-    console.log("get: ", getValues("allowNegativeMarking"))
-    console.log("state", allowNegativeMarking);
     try {
+      handleLoading(true);
+      handleState(examState.WAITING);
+      const userId = await getUserId();
+      if (userId) {
+        // setValue("userId", userId);
+        data.userId = userId as string;
+        // console.log("userid: ", data);
+      }
+
       const response = await fetch(routes.createDummyExam, {
         method: "POST",
         headers: {
@@ -142,7 +151,8 @@ const ExamForm = ({ state, handleState }: props) => {
       console.log("Form submitted successfully:", result);
 
       updateMCQData(result);
-      handleState(examState.RUNNING);
+      handleLoading(false);
+      handleState(examState.WAITING_AND_DATAREADY);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -152,6 +162,7 @@ const ExamForm = ({ state, handleState }: props) => {
     event: Event,
     newValue: number | number[]
   ) => {
+    
     setExamDuration(newValue);
     setValue("examDuration", newValue);
   };
@@ -353,15 +364,20 @@ const ExamForm = ({ state, handleState }: props) => {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <Typography variant="subtitle1">Allow Negative Marking:</Typography>
+                  <Typography variant="subtitle1">
+                    Allow Negative Marking:
+                  </Typography>
                   <Switch
                     value={allowNegativeMarking}
                     {...register("allowNegativeMarking", {
                       onChange: (e) => {
-
-                        setAllowNegativeMarking(allowNegativeMarking ? false : true);
+                        setAllowNegativeMarking(
+                          allowNegativeMarking ? false : true
+                        );
                       },
-                      setValueAs: v => {return allowNegativeMarking ? true : false}
+                      setValueAs: (v) => {
+                        return allowNegativeMarking ? true : false;
+                      },
                     })}
                   />
                 </Stack>

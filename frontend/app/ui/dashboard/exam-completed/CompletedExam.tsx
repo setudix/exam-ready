@@ -24,7 +24,7 @@ const CompletedExam = ({questions} : prop) => {
               {`${index + 1}. ${q.question}`}
             </Typography>
 
-            {q.options.map((option, optionIdx) => (
+            {q.options.map((option:any, optionIdx:any) => (
               <ListItem
               key={optionIdx}
               sx={{
