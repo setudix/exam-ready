@@ -11,6 +11,6 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
     //Exam findById(int id);
 
     // Find all Exams by userId
-    //List<Exam> findByUserId(String userId);
+    List<Exam> findByUserId(String userId);
 }
 

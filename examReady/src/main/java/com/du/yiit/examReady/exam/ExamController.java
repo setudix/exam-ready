@@ -1,15 +1,14 @@
 package com.du.yiit.examReady.exam;
 
+import com.du.yiit.examReady.exam.ExamSubmission.ExamEvaluation.EvaluationWithNegativeMarkingStrategy;
+import com.du.yiit.examReady.exam.ExamSubmission.ExamEvaluation.EvaluationWithoutNegativeMarkingStrategy;
+import com.du.yiit.examReady.exam.ExamSubmission.ExamEvaluation.PerformanceEvaluator;
 import com.du.yiit.examReady.exam.ExamSubmission.ExamResponseWithCorrectAnswer;
 import com.du.yiit.examReady.exam.ExamSubmission.SubmittedExamDTO;
-import com.du.yiit.examReady.question.Question;
-import com.du.yiit.examReady.question.QuestionRepository;
-import com.du.yiit.examReady.question.QuestionService;
-import com.du.yiit.examReady.question.QuestionWithoutCorrectDTO;
+import com.du.yiit.examReady.question.*;
+import com.du.yiit.examReady.utils.ExamUtils;
 import com.du.yiit.examReady.utils.PromptService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -30,6 +29,8 @@ public class ExamController {
     @Autowired
     ExamRepository examRepository;
 
+    @Autowired
+    QuestionRepository questionRepository;
 
     @PostMapping("/create")
     public ResponseEntity<CreateExamResponse> create(@RequestBody ExamRequestDTO examRequestDTO){
@@ -46,14 +47,61 @@ public class ExamController {
     }
 
     @PostMapping("/submit-exam")
-    public ResponseEntity<ExamResponseWithCorrectAnswer> submitExam(@RequestBody SubmittedExamDTO submittedExamDTO) {
+    public ResponseEntity<ExamResultDTO> submitExam(@RequestBody SubmittedExamDTO submittedExamDTO) {
         questionService.updateQuestionAnswers(submittedExamDTO);
         int examId = submittedExamDTO.getExamId();
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
+        exam.setTaken(true);
+        examRepository.save(exam);
+        //var questionWithCorrectDTOS = questionService.getDTOList(submittedExamDTO);
+        return ResponseEntity.ok(new ExamResultDTO(examId));
+    }
 
-        var questionWithCorrectDTOS = questionService.getDTOList(submittedExamDTO);
-        return ResponseEntity.ok(new ExamResponseWithCorrectAnswer(exam, questionWithCorrectDTOS));
+    @GetMapping("/get-by-id")
+    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam int examId){
+        Optional<Exam> optionalExam = examRepository.findById(examId);
+        Exam exam = optionalExam.get();
+        ExamUtils examUtils=new ExamUtils(questionRepository);
+        exam.setNumberOfAnswered(examUtils.getNumberOfAnswered(exam));
+        PerformanceEvaluator performanceEvaluator=new PerformanceEvaluator();
+        if(exam.isAllowNegativeMarking()){
+            performanceEvaluator.setEvaluationStrategy(new EvaluationWithNegativeMarkingStrategy(examRepository,questionRepository));
+        }
+        else{
+            performanceEvaluator.setEvaluationStrategy(new EvaluationWithoutNegativeMarkingStrategy(examRepository,questionRepository));
+        }
+        exam.setScore(performanceEvaluator.getEvaluation(examId));
+        List<Question> questions=new ArrayList<Question>();
+        questions=questionRepository.findByExamId(examId);
+        List<QuestionWithoutExam> questionWithoutExams=new ArrayList<QuestionWithoutExam>();
+        for(Question question:questions){
+            questionWithoutExams.add(new QuestionWithoutExam(question));
+        }
+
+        ExamWithoutUserDTO examWithoutUserDTO=new ExamWithoutUserDTO(exam);
+
+        return ResponseEntity.ok(new ExamResponseDTO(examWithoutUserDTO,questionWithoutExams));
+
+    }
+
+    @GetMapping ("get-by-userid")
+    public ResponseEntity<List<ExamResponseDTO>> getExamsByUserId(@RequestParam String userId){
+        List<Exam> exams=new ArrayList<Exam>();
+        exams=examRepository.findByUserId(userId);
+        List<ExamResponseDTO> examResponseDTOS=new ArrayList<ExamResponseDTO>();
+
+        for(Exam exam:exams){
+            ExamWithoutUserDTO examWithoutUserDTO=new ExamWithoutUserDTO(exam);
+            List<Question> questions=new ArrayList<Question>();
+            questions=questionRepository.findByExamId(exam.getId());
+            List<QuestionWithoutExam> questionWithoutExams=new ArrayList<QuestionWithoutExam>();
+            for(Question question:questions){
+                questionWithoutExams.add(new QuestionWithoutExam(question));
+            }
+            examResponseDTOS.add(new ExamResponseDTO(examWithoutUserDTO,questionWithoutExams));
+        }
+        return ResponseEntity.ok(examResponseDTOS);
     }
 
 }
