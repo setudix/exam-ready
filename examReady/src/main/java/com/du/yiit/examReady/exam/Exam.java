@@ -42,6 +42,9 @@ import jakarta.persistence.*;
         @Column (name = "isExamDurationInfinite", nullable=false, columnDefinition = "BOOLEAN DEFAULT FALSE")
         private boolean isExamDurationInfinite;
 
+        @Column(name = "numberOfAnswered", nullable = false, columnDefinition = "int DEFAULT 0")
+        private int numberOfAnswered;
+
         @Column(name = "score", nullable = true)
         private double score;
 
@@ -75,6 +78,14 @@ import jakarta.persistence.*;
 
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    public int getNumberOfAnswered() {
+        return numberOfAnswered;
+    }
+
+    public void setNumberOfAnswered(int numberOfAnswered) {
+        this.numberOfAnswered = numberOfAnswered;
     }
 
     public int getQuestionSize() {
