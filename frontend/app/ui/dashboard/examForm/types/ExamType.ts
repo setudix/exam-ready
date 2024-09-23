@@ -7,6 +7,8 @@ type ExamType = {
   taken: boolean;
   score: number;
   examDurationAuto: boolean;
+  allowNegativeMarking: boolean;
+  isExamDurationInfinite: boolean;
 };
 
 export default ExamType;

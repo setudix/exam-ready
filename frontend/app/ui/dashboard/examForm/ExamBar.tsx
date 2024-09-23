@@ -1,11 +1,24 @@
 import { AppBar, Box, Stack, Toolbar, Typography } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Timer from "../timer/timer";
+import { useMcqDataStore } from "./mcqDataStore";
+import { useExamStateStore } from "./examStateStore";
+import examState from "./examState";
 
 const ExamBar = () => {
   const [isFixed, setIsFixed] = useState(false);
   const appBarRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+
+  var examData = useMcqDataStore(s => s.data);
+  const state = useExamStateStore(s => s.state);
+
+  // console.log(state);
+  // useEffect(() => {
+  //   if(state === examState.WAITING_AND_DATAREADY){
+  //     examData = useMcqDataStore(s => s.data);
+  //   }
+  // }, [state]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +77,7 @@ const ExamBar = () => {
                   Questions answered:
                 </Typography>
 
-                <Timer initialTime={200} />
+                <Timer />
               </Stack>
             </Box>
           </Toolbar>

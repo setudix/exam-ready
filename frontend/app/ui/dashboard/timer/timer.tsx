@@ -1,21 +1,68 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
+import { useExamStateStore } from "../examForm/examStateStore";
+import examState from "../examForm/examState";
+import { useMcqDataStore } from "../examForm/mcqDataStore";
 
 interface TimerProps {
-  initialTime: number;
+  getTime: () => number;
+  isExamUntimed: () => boolean;
 }
 
-const Timer = ({ initialTime = 0 }: TimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
+const Timer = () => {
+  const [timeLeft, setTimeLeft] = useState(0);
+  // const examUntimed = isExamUntimed();
+  const state = useExamStateStore((s) => s.state);
+  const handleState = useExamStateStore((s) => s.update);
+  const examData = useMcqDataStore((s) => s.data);
 
-  useEffect(() => {
-    if (timeLeft > 0) {
-      const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timerId);
+  const getExamTime = () => {
+    console.log("examData: ", examData);
+    if (examData){
+      if (examData.exam?.isExamDurationInfinite) {
+        return -1;
+      }
+      if (examData.exam?.examDurationAuto) {
+        return examData.exam.questionSize * 60;
+      }
+      if (examData.exam?.duration) {
+        return examData.exam.duration * 60;
+      }
+      return 5;
     }
-  }, [timeLeft]);
+    return 0;
+  };
+
+  const initialTime = useMemo(() => {
+    if (state === examState.WAITING_AND_DATAREADY) {
+      console.log(state);
+      const time = getExamTime();
+      setTimeLeft(time);
+      return time;
+    }
+    return 0;
+  }, [state]);
+  const getExamUntimed = () => {
+    if (examData && examData.exam?.isExamDurationInfinite) {
+      return examData.exam.isExamDurationInfinite;
+    }
+    return false;
+  };
+  console.log("time limit: ", initialTime);
+  useEffect(() => {
+    if (state === examState.RUNNING && getExamUntimed() == false) {
+      if (timeLeft > 0) {
+        const timerId = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+        return () => clearTimeout(timerId);
+      }
+
+      if (timeLeft <= 0 && state === examState.RUNNING) {
+        handleState(examState.TIMEUP);
+      }
+    }
+  }, [timeLeft, state]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -33,19 +80,7 @@ const Timer = ({ initialTime = 0 }: TimerProps) => {
       {isTimeNegative ? (
         ""
       ) : (
-        <Box
-          // sx={{
-          //   position: "fixed",
-          //   top: { xs: 16, sm: 24, md: 32 },
-          //   right: { xs: 16, sm: 24, md: 32 },
-          //   padding: { xs: 2, sm: 3, md: 4 },
-          //   borderRadius: 2,
-          //   backgroundColor: "rgba(255, 255, 255, 0.1)",
-          //   backdropFilter: "blur(5px)",
-          //   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-          //   zIndex: "tooltip",
-          // }}
-        >
+        <Box>
           <Typography
             variant="body1"
             sx={{
