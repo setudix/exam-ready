@@ -18,7 +18,7 @@ import ExamBar from "./ExamBar";
 import ExamDataType from "./types/ExamDataType";
 import axios from "axios";
 import routes from "@/app/routes";
-import { useMcqDataStore } from "./mcqDataStore";
+import { UseMCQDataStore } from "./mcqDataStore";
 
 type prop = {
   // examData: ExamDataType;
@@ -28,10 +28,10 @@ const MCQExam = ({loading} : prop ) => {
   const { control, handleSubmit, setValue, getValues } = useForm();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
-  var examData = useMcqDataStore(s => s.data);
+  var examData = UseMCQDataStore(s => s.data);
 
   // useEffect(() => {
-  //   examData = useMcqDataStore(s => s.data);
+  //   examData = UseMCQDataStore(s => s.data);
   // }, [loading]);
 
   const getMCQOption = (question: any, selectedOption: string | null) => {

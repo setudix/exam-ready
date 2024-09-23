@@ -12,8 +12,8 @@ import examState from "./examState";
 import ExamDataType from "./types/ExamDataType";
 import CircleIcon from "@mui/icons-material/Circle";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { useExamStateStore } from "./examStateStore";
-import { useMcqDataStore } from "./mcqDataStore";
+import { UseExamStore } from "./examStateStore";
+import { UseMCQDataStore } from "./mcqDataStore";
 type prop = {
   // examData: ExamDataType | undefined;
   // state: any;
@@ -23,8 +23,8 @@ type prop = {
 
 const PreExamWait = ({ loading }: prop) => {
 
-  const handleState = useExamStateStore(s => s.update);
-  const examData = useMcqDataStore(s => s.data);
+  const handleState = UseExamStore(s => s.update);
+  const examData = UseMCQDataStore(s => s.data);
   const handleOnclick = (e: any) => {
     alert("You can only take this exam once!");
 

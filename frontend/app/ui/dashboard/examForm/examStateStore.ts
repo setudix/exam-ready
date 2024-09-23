@@ -8,7 +8,7 @@ type DataStore = {
   update: ( newData : any) => void;
 }
 
-export const useExamStateStore = create<DataStore>((set) => ({
+export const UseExamStore = create<DataStore>((set) => ({
   state: examState.EDITING,
   update: (newData: examState) => {
     set({state: newData});

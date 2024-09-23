@@ -7,7 +7,7 @@ type DataStore = {
   update: ( newData : any) => void;
 }
 
-export const useMcqDataStore = create<DataStore>((set) => ({
+export const UseMCQDataStore = create<DataStore>((set) => ({
   data: undefined,
   update: (newData: ExamDataType) => {
     set({data: newData});

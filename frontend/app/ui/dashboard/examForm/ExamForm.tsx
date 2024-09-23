@@ -28,7 +28,7 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import { useSession } from "next-auth/react";
 import SelectColors from "./SelectColors";
 import examState from "./examState";
-import { useMcqDataStore } from "./mcqDataStore";
+import { UseMCQDataStore } from "./mcqDataStore";
 import routes from "@/app/routes";
 import HourglassDisabledIcon from "@mui/icons-material/HourglassDisabled";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
@@ -37,7 +37,7 @@ import ReportOffIcon from "@mui/icons-material/ReportOff";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useExamStateStore } from "./examStateStore";
+import { UseExamStore } from "./examStateStore";
 
 type props = {
   handleLoading: (val: boolean) => void;
@@ -88,7 +88,7 @@ const ExamForm = ({ handleLoading }: props) => {
 
   const { data: session } = useSession();
 
-  const handleState = useExamStateStore(s => s.update);
+  const handleState = UseExamStore(s => s.update);
 
   useEffect(() => {
     setValue("isExamDurationAuto", isExamDurationAuto as boolean);
@@ -107,7 +107,7 @@ const ExamForm = ({ handleLoading }: props) => {
   //   console.log("--- : ", isExamDurationInfinite);
   // },[isExamDurationInfinite])
   ////////// ZUSTAND STUFF
-  const updateMCQData = useMcqDataStore((state) => state.update);
+  const updateMCQData = UseMCQDataStore((state) => state.update);
   
 
   ////// Getting Session
@@ -162,6 +162,7 @@ const ExamForm = ({ handleLoading }: props) => {
     event: Event,
     newValue: number | number[]
   ) => {
+    
     setExamDuration(newValue);
     setValue("examDuration", newValue);
   };

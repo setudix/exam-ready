@@ -1,8 +1,8 @@
 import { AppBar, Box, Stack, Toolbar, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Timer from "../timer/timer";
-import { useMcqDataStore } from "./mcqDataStore";
-import { useExamStateStore } from "./examStateStore";
+import { UseMCQDataStore } from "./mcqDataStore";
+import { UseExamStore } from "./examStateStore";
 import examState from "./examState";
 
 const ExamBar = () => {
@@ -10,13 +10,13 @@ const ExamBar = () => {
   const appBarRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
 
-  var examData = useMcqDataStore(s => s.data);
-  const state = useExamStateStore(s => s.state);
+  var examData = UseMCQDataStore(s => s.data);
+  const state = UseExamStore(s => s.state);
 
   // console.log(state);
   // useEffect(() => {
   //   if(state === examState.WAITING_AND_DATAREADY){
-  //     examData = useMcqDataStore(s => s.data);
+  //     examData = UseMCQDataStore(s => s.data);
   //   }
   // }, [state]);
 

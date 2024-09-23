@@ -4,22 +4,19 @@ import ExamForm from "@/app/ui/dashboard/examForm/ExamForm";
 import MCQExam from "@/app/ui/dashboard/examForm/MCQExam";
 import PreExamWait from "@/app/ui/dashboard/examForm/PreExamWait";
 import examState from "@/app/ui/dashboard/examForm/examState";
-import { useExamStateStore } from "@/app/ui/dashboard/examForm/examStateStore";
-import { useMcqDataStore } from "@/app/ui/dashboard/examForm/mcqDataStore";
+import { UseExamStore } from "@/app/ui/dashboard/examForm/examStateStore";
+import { UseMCQDataStore } from "@/app/ui/dashboard/examForm/mcqDataStore";
 import { Container } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
+import { useState } from "react";
 
-const page = () => {
-  // const [state, setState] = useState<examState>(examState.EDITING);
-  // const handleState = (val: examState) => {
-  //   setState(() => val);
-  // };
-  const state = useExamStateStore((state) => state.state);
+const Page = () => {
+  const state = UseExamStore((state) => state.state);
   const [loading, setLoading] = useState<boolean>(false);
   const handleLoading = (val: boolean) => {
     setLoading(val);
   }
-  const mcqExamData = useMcqDataStore((state) => state.data);
+  const mcqExamData = UseMCQDataStore((state) => state.data);
   return (
     <>
       <Container sx={{ height: "100%" }}>
@@ -53,4 +50,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

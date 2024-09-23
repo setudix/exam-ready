@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Box, Typography } from "@mui/material";
-import { useExamStateStore } from "../examForm/examStateStore";
+import { UseExamStore } from "../examForm/examStateStore";
 import examState from "../examForm/examState";
-import { useMcqDataStore } from "../examForm/mcqDataStore";
+import { UseMCQDataStore } from "../examForm/mcqDataStore";
 
 interface TimerProps {
   getTime: () => number;
@@ -14,9 +14,9 @@ interface TimerProps {
 const Timer = () => {
   const [timeLeft, setTimeLeft] = useState(0);
   // const examUntimed = isExamUntimed();
-  const state = useExamStateStore((s) => s.state);
-  const handleState = useExamStateStore((s) => s.update);
-  const examData = useMcqDataStore((s) => s.data);
+  const state = UseExamStore((s) => s.state);
+  const handleState = UseExamStore((s) => s.update);
+  const examData = UseMCQDataStore((s) => s.data);
 
   const getExamTime = () => {
     console.log("examData: ", examData);
