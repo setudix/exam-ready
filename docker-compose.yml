@@ -1,6 +1,38 @@
-version: '3'
+version: '3.8'
 
 services:
+  db: 
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      exam-net:
+        ipv4_address: 172.20.2.2
+
+  backend:
+    build:
+      context: ./examReady
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db  
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/${MYSQL_DATABASE}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_ROOT_PASSWORD} 
+    networks:
+      exam-net:
+        ipv4_address: 172.20.2.3
   frontend:
     build:
       context: ./frontend/
@@ -9,3 +41,21 @@ services:
     working_dir: /next
     ports:
     - "3000:3000"
+    # environment:
+    #   - NEXT_PUBLIC_SERVER=http://172.20.0.3:8080
+    depends_on:
+      - backend
+    networks:
+      exam-net:
+        ipv4_address: 172.20.2.4
+volumes:
+  mysql_data:
+
+networks:
+  exam-net:
+    driver: bridge
+    name: exam-net
+    ipam: 
+      driver: default
+      config: 
+        - subnet: 172.20.2.0/28

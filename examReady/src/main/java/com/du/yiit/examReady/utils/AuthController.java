@@ -4,10 +4,7 @@ import com.du.yiit.examReady.user.User;
 import com.du.yiit.examReady.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,11 +15,23 @@ public class AuthController {
 
     @Autowired
     private JwtTokenProvider tokenProvider;
+    @Autowired
+    private JwtTokenService jwtTokenService;
+
+    public AuthController() {
+    }
+
+    public AuthController(UserService userService, JwtTokenProvider tokenProvider, JwtTokenService jwtTokenService) {
+        this.userService = userService;
+        this.tokenProvider = tokenProvider;
+        this.jwtTokenService = jwtTokenService;
+    }
 
     public AuthController(UserService userService, JwtTokenProvider tokenProvider) {
         this.userService = userService;
         this.tokenProvider = tokenProvider;
     }
+
 
     @PostMapping("/social-login")
     public ResponseEntity<?> socialLogin(@RequestBody SocialLoginRequest loginRequest)
@@ -32,6 +41,12 @@ public class AuthController {
         String token = tokenProvider.generateToken(user);
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(token));
+    }
+
+
+    @GetMapping("fff")
+    public ResponseEntity<String> fff(@RequestParam String fff){
+        return ResponseEntity.ok(jwtTokenService.getUserIdFromToken(fff));
     }
 
     public static class JwtAuthenticationResponse {

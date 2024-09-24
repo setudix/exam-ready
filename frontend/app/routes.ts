@@ -1,6 +1,8 @@
-const serverUrl = 'http://localhost';
-const port = ":8080";
+const serverUrl = process.env.NEXT_PUBLIC_SERVER;
+const port = process.env.NEXT_PUBLIC_SERVER_PORT;
 
+
+console.log(serverUrl, port);
 
 const routes = {
   home: '/',
