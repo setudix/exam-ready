@@ -20,11 +20,11 @@ services:
 
   backend:
     build:
-      context: ./examReady
-      dockerfile: Dockerfile
+      context: ./examReady/
+      dockerfile: ./examReady/Dockerfile
     container_name: backend
-    ports:
-      - "8080:8080"
+    # ports:
+    #   - "8080:8080"
     depends_on:
       - db  
     environment:
@@ -33,23 +33,23 @@ services:
     networks:
       exam-net:
         ipv4_address: 172.20.2.3
+        
   frontend:
     build:
       context: ./frontend/
-      dockerfile: Dockerfile
+      dockerfile: ./frontend/Dockerfile
     container_name: frontend
     working_dir: /next
     ports:
     - "3000:3000"
     # environment:
     #   - NEXT_PUBLIC_SERVER=http://172.20.0.3:8080
-    depends_on:
-      - backend
+      
     networks:
       exam-net:
         ipv4_address: 172.20.2.4
-volumes:
-  mysql_data:
+# volumes:
+#   mysql_data:
 
 networks:
   exam-net:

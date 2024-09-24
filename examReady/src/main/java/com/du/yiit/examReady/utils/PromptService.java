@@ -48,6 +48,11 @@ public class PromptService {
         return callOpenAIApi(prompt, questionSize)
                 .map(response -> {
                     //System.out.println("OpenAI's response: " + response);
+                    response = response.trim()
+                                        .replace("```json", "")
+                                        .replace("```", "");
+
+                    System.out.println("after changes: " +  response);
                     return response; // Ensure this is clean JSON
                 })
                 .flatMap(json -> {

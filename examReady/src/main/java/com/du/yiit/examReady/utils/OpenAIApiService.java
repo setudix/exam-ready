@@ -23,7 +23,7 @@ public class OpenAIApiService {
 
     public Mono<String> sendMessage(String message) {
         OpenAIRequest request = new OpenAIRequest(
-                "gpt-4o",
+                "gpt-4o-mini",
                 List.of(new Message("user", message))
         );
         return openAIWebClient.post()
