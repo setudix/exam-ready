@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy the Maven project files to the container
 COPY pom.xml .
-RUN mvn dependency:go-offline -B
+# RUN mvn dependency:go-offline -B
 # COPY src/main/java/com/du/yiit/examReady/ExamReadyApplication.java ./src/main/java/com/du/yiit/examReady/ExamReadyApplication.java
 COPY src ./src
 RUN mvn clean package -DskipTests

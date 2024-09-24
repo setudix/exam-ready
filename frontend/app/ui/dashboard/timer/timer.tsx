@@ -50,7 +50,7 @@ const Timer = () => {
     }
     return false;
   };
-  console.log("time limit: ", initialTime);
+  // console.log("time limit: ", initialTime);
   useEffect(() => {
     if (state === examState.RUNNING && getExamUntimed() == false) {
       if (timeLeft > 0) {

@@ -58,13 +58,19 @@ const MCQExam = ({loading} : prop ) => {
       examId: examData.exam?.id,
     };
 
-    const response = await axios.post(routes.submitMCQExam, formattedData);
+    console.log(formattedData);
+    try{
 
-    console.log(JSON.stringify(formattedData, null, 2));
-    setSubmittedData(formattedData);
-    setOpenSnackbar(true);
+      const response = await axios.post(routes.submitMCQExam, formattedData);
+      
+      console.log(JSON.stringify(formattedData, null, 2));
+      setSubmittedData(formattedData);
+      setOpenSnackbar(true);
+      
+      console.log("response", response.data);
+    } catch(e){
 
-    console.log("response", response.data);
+    }
 
   };
 
