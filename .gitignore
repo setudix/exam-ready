@@ -130,3 +130,6 @@ dist
 .pnp.*
 
 .idea/*
+mysql_data/*
+*.sql
+*.log

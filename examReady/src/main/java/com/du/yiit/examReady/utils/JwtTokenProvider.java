@@ -14,6 +14,30 @@ public class JwtTokenProvider {
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
+    public String getJwtSecret() {
+        return jwtSecret;
+    }
+
+    public void setJwtSecret(String jwtSecret) {
+        this.jwtSecret = jwtSecret;
+    }
+
+    public Long getJwtExpirationMs() {
+        return jwtExpirationMs;
+    }
+
+    public void setJwtExpirationMs(Long jwtExpirationMs) {
+        this.jwtExpirationMs = jwtExpirationMs;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
     @Value("${app.jwtExpirationMs}")
     private Long jwtExpirationMs;
 

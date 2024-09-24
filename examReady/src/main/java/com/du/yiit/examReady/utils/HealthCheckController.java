@@ -22,6 +22,7 @@ public class HealthCheckController {
     @GetMapping
     public ResponseEntity<Void> healthCheck()
     {
+//        System.out.println("FF");
         try(Connection connection = dataSource.getConnection()){
             if (connection.isValid(1)){
                 return ResponseEntity.status(HttpStatus.OK).build();

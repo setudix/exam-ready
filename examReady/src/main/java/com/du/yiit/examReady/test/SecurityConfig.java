@@ -15,20 +15,15 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().permitAll()
+                        .anyRequest()
+
+                        .permitAll()
                 )
-//                .oauth2Login(oauth2 -> oauth2
-//                        .userInfoEndpoint(userInfo -> userInfo
-//                                .userService(customOAuth2UserService)
-//                        )
-//                )
                 .csrf(csrf -> csrf.disable());
-//                .headers(headers -> headers.frameOptions().disable());
 
         return http.build();
     }
 
-    @Autowired
-    private Oauth2UserService customOAuth2UserService;
+
 
 }
