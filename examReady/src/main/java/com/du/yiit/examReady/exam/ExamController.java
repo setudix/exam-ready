@@ -58,8 +58,10 @@ public class ExamController {
         return ResponseEntity.ok(new ExamResultDTO(examId));
     }
 
-    @GetMapping("/get-by-id")
-    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam int examId){
+    @GetMapping
+    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam("id") int examId){
+
+        System.out.println("exam id : "  + examId);
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
         ExamUtils examUtils=new ExamUtils(questionRepository);

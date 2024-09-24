@@ -1,49 +1,56 @@
-// import routes from '@/app/routes';
-// import { Container } from '@mui/material';
-// import axios from 'axios';
-// import Error from 'next/error';
-// import { useRouter } from 'next/router';
-// import React, { useCallback, useEffect, useState } from 'react'
+"use client";
 
-// const Page = () => {
-//   const router = useRouter();
-//   const { id } = router.query;
-//   const [data, setData] = useState(null);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [error, setError] = useState<any>(null);
+import routes from '@/app/routes';
+import CompletedExam from '@/app/ui/dashboard/exam-completed/CompletedExam';
+import CompletedExamDataType from '@/app/ui/dashboard/exam-completed/types/CompletedExamDataType';
+import { Container } from '@mui/material';
+import axios from 'axios';
+import Error from 'next/error';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react'
 
-//   const fetchData = useCallback(async ()=> {
-//     try{
-//       setLoading(true);
-//       const response = await axios.get(routes.getExamById, {
-//         params: {
-//           examId: id,
-//         },
-//       });
-//       setData(response.data);
+const Page = ({ params } : any) => {
+  // const router = useRouter();
+  // const { id } = router.query;
 
-//     } catch (error : any){
-//       setError(error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   }, []);
+  const id = params.id;
+  const [data, setData] = useState<CompletedExamDataType>({});
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<any>(null);
+  // console.log(id);
+  const fetchData = useCallback(async ()=> {
+    try{
+      setLoading(true);
+      console.log("calling")
+      const response = await axios.get(routes.getExamById, {
+        params: {
+          id: id,
+        },
+      });
+      console.log(response.data);
+      setData(response.data);
 
-//   useEffect(() => {
-//     fetchData();
-//   },[]);
+    } catch (error : any){
+      console.log(error.message);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-//   return (
-//     <>
-//       <Container >
+  useEffect(() => {
+    fetchData();
+  },[]);
 
-//       <pre>
-//         {data}
-//       </pre>
+  return (
+    <>
+      <Container >
 
-//       </Container>
-//     </>
-//   )
-// }
+      <CompletedExam info={data.examWithoutUserDTO} ques={data.questionWithoutExams} />
 
-// export default Page
+      </Container>
+    </>
+  )
+}
+
+export default Page

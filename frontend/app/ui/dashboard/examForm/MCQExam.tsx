@@ -19,6 +19,9 @@ import ExamDataType from "./types/ExamDataType";
 import axios from "axios";
 import routes from "@/app/routes";
 import { UseMCQDataStore } from "./mcqDataStore";
+import { usePathname, useRouter } from "next/navigation";
+import { UseExamStore } from "./examStateStore";
+import examState from "./examState";
 
 type prop = {
   // examData: ExamDataType;
@@ -28,8 +31,12 @@ const MCQExam = ({loading} : prop ) => {
   const { control, handleSubmit, setValue, getValues } = useForm();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
-  var examData = UseMCQDataStore(s => s.data);
 
+  const router = useRouter();
+  const pathname = usePathname();
+  var examData = UseMCQDataStore(s => s.data);
+  const handleState = UseExamStore(s => s.update);
+  const handleMCQDataUpdate = UseMCQDataStore(s => s.update);
   // useEffect(() => {
   //   examData = UseMCQDataStore(s => s.data);
   // }, [loading]);
@@ -66,10 +73,13 @@ const MCQExam = ({loading} : prop ) => {
       console.log(JSON.stringify(formattedData, null, 2));
       setSubmittedData(formattedData);
       setOpenSnackbar(true);
-      
-      console.log("response", response.data);
+      handleState
+      const url = routes.fe_getExamAnswerWithId + response.data.examId;
+      router.replace(url);
+      handleState(examState.EDITING);
+      handleMCQDataUpdate(undefined);
     } catch(e){
-
+      router.replace(routes.home);
     }
 
   };
