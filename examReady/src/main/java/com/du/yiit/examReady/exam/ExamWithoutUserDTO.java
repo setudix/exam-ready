@@ -15,7 +15,11 @@ public class ExamWithoutUserDTO {
     private boolean allowNegativeMarking;
     private boolean isExamDurationInfinite;
     private int numberOfAnswered;
+    private int numberOfCorrect;
     private double score;
+    private long creationDate;
+    private long submissionDate;
+
 
     public ExamWithoutUserDTO(Exam exam) {
         this.id=exam.getId();
@@ -29,6 +33,33 @@ public class ExamWithoutUserDTO {
         this.taken=exam.isTaken();
         this.isExamDurationAuto=exam.isExamDurationAuto();
         this.allowNegativeMarking=exam.isAllowNegativeMarking();
+        this.numberOfCorrect=exam.getNumberOfCorrect();
+        this.creationDate= exam.getCreationDate();
+        this.submissionDate=exam.getSubmissionDate();
+    }
+
+    public long getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(long creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public long getSubmissionDate() {
+        return submissionDate;
+    }
+
+    public void setSubmissionDate(long submissionDate) {
+        this.submissionDate = submissionDate;
+    }
+
+    public int getNumberOfCorrect() {
+        return numberOfCorrect;
+    }
+
+    public void setNumberOfCorrect(int numberOfCorrect) {
+        this.numberOfCorrect = numberOfCorrect;
     }
 
     public Integer getId() {

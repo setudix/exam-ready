@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,24 +52,41 @@ public class ExamController {
         return ResponseEntity.ok(new CreateExamResponse(examWithoutPromptDTO,questionWithoutCorrectDTOS));
     }
 
+
     @PostMapping("/submit-exam")
     public ResponseEntity<ExamResultDTO> submitExam(@RequestBody SubmittedExamDTO submittedExamDTO) {
-        questionService.updateQuestionAnswers(submittedExamDTO);
         int examId = submittedExamDTO.getExamId();
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
+
+//        if(exam.isTaken()){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//        }
+
+        questionService.updateQuestionAnswers(submittedExamDTO);
         exam.setTaken(true);
+        Instant now = Instant.now();
+        exam.setSubmissionDate(now.getEpochSecond());
         examRepository.save(exam);
         //var questionWithCorrectDTOS = questionService.getDTOList(submittedExamDTO);
         return ResponseEntity.ok(new ExamResultDTO(examId));
     }
 
     @GetMapping
-    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam("id") int examId){
+    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam("id") int examId,@RequestHeader(value ="Authorization", required = false) String authHeader){
 
-        System.out.println("exam id : "  + examId);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
+        String token = authHeader.substring(7);
+        if (jwtTokenService.validateToken(token)){
+            String userId = jwtTokenService.getUserIdFromToken(token);
+            if(!userId.equals(exam.getUser().getId())){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }}
+
         ExamUtils examUtils=new ExamUtils(questionRepository);
         exam.setNumberOfAnswered(examUtils.getNumberOfAnswered(exam));
         PerformanceEvaluator performanceEvaluator=new PerformanceEvaluator();
