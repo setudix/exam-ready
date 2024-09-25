@@ -11,6 +11,9 @@ type CompletedExamType = {
   questionSize: number;
   score: number;
   taken: boolean;
+  numberOfCorrect: number;
+  creationDate: number;
+  submissionDate: number;
 };
 
 export default CompletedExamType;

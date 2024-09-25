@@ -66,7 +66,7 @@ const ExamForm = ({ handleLoading }: props) => {
       examName: "",
       isExamDurationAuto: true,
       examDuration: 0,
-      questionSize: 15,
+      questionSize: 5,
       promptText: "",
       examColor: "#a3a3a3",
       allowNegativeMarking: false,
@@ -86,7 +86,7 @@ const ExamForm = ({ handleLoading }: props) => {
     useState<boolean>(false);
   const [allowNegativeMarking, setAllowNegativeMarking] = useState(false);
 
-  const { data: session } = useSession();
+  const { data: session , status} = useSession();
 
   const handleState = UseExamStore(s => s.update);
 
@@ -128,11 +128,10 @@ const ExamForm = ({ handleLoading }: props) => {
     try {
       handleLoading(true);
       handleState(examState.WAITING);
-      const userId = await getUserId();
-      if (userId) {
-        // setValue("userId", userId);
-        data.userId = userId as string;
-        // console.log("userid: ", data);
+      
+      var userId = ' ';
+      if (loading === "authenticated") {
+        userId = session?.user.id;
       }
 
       const response = await fetch(routes.createDummyExam, {
@@ -174,8 +173,8 @@ const ExamForm = ({ handleLoading }: props) => {
   const handleExamDurationBlur = () => {
     if (Number(examDuration) < 0) {
       setExamDuration(0);
-    } else if (Number(examDuration) > 60) {
-      setExamDuration(60);
+    } else if (Number(examDuration) > 20) {
+      setExamDuration(20);
     }
   };
 
@@ -296,7 +295,7 @@ const ExamForm = ({ handleLoading }: props) => {
                     value={examDuration}
                     onChange={handleDurationSliderChange}
                     min={1}
-                    max={60}
+                    max={20}
                     aria-labelledby="exam-duration-slider"
                     valueLabelDisplay="auto"
                     disabled={isExamDurationInfinite}
@@ -318,7 +317,7 @@ const ExamForm = ({ handleLoading }: props) => {
                   value={questionSize}
                   // onChange={handleSliderChange}
                   min={5}
-                  max={50}
+                  max={20}
                   step={5}
                   marks
                   valueLabelDisplay="auto"

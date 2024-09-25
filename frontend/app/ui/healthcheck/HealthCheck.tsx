@@ -30,7 +30,7 @@ const HealthCheck = () => {
   useEffect(() => {
     checkStatus();
 
-    const intervalId = setInterval(checkStatus, 15 * 1000);
+    const intervalId = setInterval(checkStatus, 60 * 1000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -41,7 +41,6 @@ const HealthCheck = () => {
     <>
       <Snackbar
         open={isSnackBarOpen}
-        // autoHideDuration={2000}
         onClose={handleCloseSnackbar}
       >
         <Alert

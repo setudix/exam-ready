@@ -14,7 +14,7 @@ const Page = () => {
   const fetchData = useCallback(async () => {
     try {
       // setLoading(true);
-      console.log("in callback", status);
+      // console.log("in callback", status);
       const acstoken =
         status === "authenticated" ? `Bearer ${session.token}` : "";
 

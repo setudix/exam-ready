@@ -27,13 +27,13 @@ public class FormController {
                     "  \"exam\": {\n" +
                     "    \"id\": 3,\n" +
                     "    \"name\": \"united1\",\n" +
-                    "    \"duration\": 0,\n" +
+                    "    \"duration\": 0.25,\n" +
                     "    \"questionSize\": 10,\n" +
                     "    \"color\": \"#fb923c\",\n" +
                     "    \"taken\": false,\n" +
                     "    \"score\": null,\n" +
-                    "    \"examDurationAuto\": true,\n" +
-                    "    \"allowNegativeMarking\": false,\n" +
+                    "    \"examDurationAuto\": false,\n" +
+                    "    \"allowNegativeMarking\": true,\n" +
                     "    \"isExamDurationInfinite\": false\n" +
                     "  },\n" +
                     "  \"questions\": [\n" +

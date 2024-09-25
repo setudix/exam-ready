@@ -10,8 +10,8 @@ const ExamBar = () => {
   const appBarRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement>(null);
 
-  var examData = UseMCQDataStore(s => s.data);
-  const state = UseExamStore(s => s.state);
+  var examData = UseMCQDataStore((s) => s.data);
+  const state = UseExamStore((s) => s.state);
 
   // console.log(state);
   // useEffect(() => {
@@ -65,22 +65,26 @@ const ExamBar = () => {
             transition: "position 0.3s ease-in-out",
           }}
         >
-          <Toolbar sx={{}}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Typography variant="body1" fontWeight="bold" color="black">
+          {examData && examData.exam?.isExamDurationInfinite ? (
+            ""
+          ) : (
+            <Toolbar sx={{}}>
+              <Box sx={{ flexGrow: 1 }}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {/* <Typography variant="body1" fontWeight="bold" color="black">
                   Questions answered:
-                </Typography>
+                </Typography> */}
 
-                <Timer />
-              </Stack>
-            </Box>
-          </Toolbar>
+                  <Timer />
+                </Stack>
+              </Box>
+            </Toolbar>
+          )}
         </AppBar>
       </Box>
     </>

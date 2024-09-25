@@ -9,6 +9,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import html2canvas from "html2canvas";
 import jspdf from "jspdf";
 import { usePDF } from "react-to-pdf";
+import dateHelper from "./types/datehelper";
 
 type prop = {
   info: CompletedExamType | undefined;
@@ -78,17 +79,39 @@ const CompletedExam = ({ info, ques }: prop) => {
         <Box>
           {info && (
             <Paper sx={{ marginY: 4, padding: 4 }}>
-              <MyItem left="Exam Name:" right={info.name} />
-              <MyItem left="Score: " right={info.score} />
-              <MyItem
-                left="Allow Negative Marking:"
-                right={info.allowNegativeMarking ? "True" : "False"}
-              />
-              <MyItem
-                left="Number of Answered:"
-                right={info.numberOfAnswered}
-              />
-              <MyItem left="Total Questions:" right={info.questionSize} />
+                <MyItem
+                  left="Exam Name:"
+                  right={info.name}
+                />
+                <MyItem
+                  left="Exam Date:"
+                  right={`${dateHelper(info?.creationDate)}`}
+                />
+                <MyItem
+                  left="Negative Marking Allowed?:"
+                  right={
+                    info.allowNegativeMarking
+                      ? "True"
+                      : "False"
+                  }
+                />
+                <MyItem
+                  left="Total Questions:"
+                  right={info.questionSize}
+                />
+                <MyItem
+                  left="Number of Answered:"
+                  right={info.numberOfAnswered}
+                />
+
+                <MyItem
+                  left="Number of Correct:"
+                  right={info?.numberOfCorrect}
+                />
+                <MyItem
+                  left="Score: "
+                  right={info.score}
+                />
             </Paper>
           )}
           <Paper sx={{ marginY: 4, padding: 4 }}>
