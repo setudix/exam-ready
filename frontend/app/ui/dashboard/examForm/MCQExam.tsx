@@ -25,18 +25,19 @@ import examState from "./examState";
 
 type prop = {
   // examData: ExamDataType;
-  loading: boolean,
+  loading: boolean;
 };
-const MCQExam = ({loading} : prop ) => {
-  const { control, handleSubmit, setValue, getValues } = useForm();
+const MCQExam = ({ loading }: prop) => {
+  const { control, handleSubmit, setValue, getValues, trigger } = useForm();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
 
   const router = useRouter();
   const pathname = usePathname();
-  var examData = UseMCQDataStore(s => s.data);
-  const handleState = UseExamStore(s => s.update);
-  const handleMCQDataUpdate = UseMCQDataStore(s => s.update);
+  var examData = UseMCQDataStore((s) => s.data);
+  const xmState = UseExamStore((s) => s.state);
+  const handleState = UseExamStore((s) => s.update);
+  const handleMCQDataUpdate = UseMCQDataStore((s) => s.update);
   // useEffect(() => {
   //   examData = UseMCQDataStore(s => s.data);
   // }, [loading]);
@@ -53,12 +54,12 @@ const MCQExam = ({loading} : prop ) => {
     return null;
   };
   const onSubmit = async (data: any) => {
-    const questions: any = 
+    const questions: any =
       examData?.questions &&
-        examData?.questions.map((q, index) => ({
-          questionId: q.id,
-          selectedOption: getMCQOption(q, data[`question-${index}`]),
-        }));
+      examData?.questions.map((q, index) => ({
+        questionId: q.id,
+        selectedOption: getMCQOption(q, data[`question-${index}`]),
+      }));
 
     const formattedData = {
       questions,
@@ -66,24 +67,33 @@ const MCQExam = ({loading} : prop ) => {
     };
 
     console.log(formattedData);
-    try{
-
+    try {
       const response = await axios.post(routes.submitMCQExam, formattedData);
-      
+
       console.log(JSON.stringify(formattedData, null, 2));
       setSubmittedData(formattedData);
       setOpenSnackbar(true);
-      handleState
+      // handleState
       const url = routes.fe_getExamAnswerWithId + response.data.examId;
       router.replace(url);
       handleState(examState.EDITING);
       handleMCQDataUpdate(undefined);
-    } catch(e){
+    } catch (e) {
       router.replace(routes.home);
     }
-
   };
 
+  useEffect(() => {
+    if (xmState == examState.TIMEUP) {
+      console.log(xmState);
+
+      const handleAutoSubmit = async () => {
+        await handleSubmit(onSubmit)();
+      };
+
+      handleAutoSubmit();
+    }
+  }, [xmState, handleSubmit, trigger]);
   const handleOptionClick = (questionIndex: any, optionValue: any) => {
     const currentValue = getValues(`question-${questionIndex}`);
     if (currentValue === optionValue) {
@@ -103,7 +113,7 @@ const MCQExam = ({loading} : prop ) => {
   return (
     <>
       <Container sx={{ height: "100%" }}>
-        <ExamBar/>
+        <ExamBar />
         <Box
           // className="max-w-2xl mx-auto mt-8 p-4"
           sx={{ flexGrow: 1, marginBottom: 4 }}
