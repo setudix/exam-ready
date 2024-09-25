@@ -16,11 +16,15 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import QuizIcon from "@mui/icons-material/Quiz";
 import LogoutIcon from "@mui/icons-material/Logout";
+import HistoryIcon from "@mui/icons-material/History";
+import ViewListIcon from "@mui/icons-material/ViewList";
 
 import { signOut } from "next-auth/react";
-import { ListItemIcon, ListItemText } from "@mui/material";
+import { ListItemIcon, ListItemText, Stack } from "@mui/material";
 
 import { Account, SessionContext } from "@toolpad/core";
+import Link from "next/link";
+import routes from "@/app/routes";
 
 const LoggedInAvatar = ({ session }: { session: any }) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
@@ -40,7 +44,7 @@ const LoggedInAvatar = ({ session }: { session: any }) => {
         </IconButton>
       </Tooltip>
       <Menu
-        sx={{ mt: "45px", maxWidth:"200px"}}
+        sx={{ mt: "45px", maxWidth: "200px" }}
         id="menu-appbar"
         anchorEl={anchorElUser}
         anchorOrigin={{
@@ -55,17 +59,40 @@ const LoggedInAvatar = ({ session }: { session: any }) => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem divider={true} sx={{ justifyContent:"center"}}>
-          <Typography variant="caption" color="textSecondary" align="center" noWrap >
+        <MenuItem divider={true} sx={{ justifyContent: "center" }}>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            align="center"
+            noWrap
+          >
             {session.user.name}
           </Typography>
+        </MenuItem>
+
+        <MenuItem>
+          <Link href={routes.fe_examHistory}>
+            <Stack direction="row">
+
+            <ListItemIcon>
+              <ViewListIcon />
+            </ListItemIcon>
+            <ListItemText>
+              <Typography  textAlign="justify">
+                Exam History
+              </Typography>
+            </ListItemText>
+            </Stack>
+          </Link>
         </MenuItem>
         <MenuItem onClick={() => signOut()}>
           <ListItemIcon>
             <LogoutIcon />
           </ListItemIcon>
           <ListItemText>
-            <Typography variant="body2" textAlign="center">Sign Out</Typography>
+            <Typography   textAlign="justify">
+              Sign Out
+            </Typography>
           </ListItemText>
         </MenuItem>
       </Menu>

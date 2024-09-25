@@ -7,8 +7,10 @@ import com.du.yiit.examReady.exam.ExamSubmission.ExamResponseWithCorrectAnswer;
 import com.du.yiit.examReady.exam.ExamSubmission.SubmittedExamDTO;
 import com.du.yiit.examReady.question.*;
 import com.du.yiit.examReady.utils.ExamUtils;
+import com.du.yiit.examReady.utils.JwtTokenService;
 import com.du.yiit.examReady.utils.PromptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -31,6 +33,9 @@ public class ExamController {
 
     @Autowired
     QuestionRepository questionRepository;
+
+    @Autowired
+    JwtTokenService jwtTokenService;
 
     @PostMapping("/create")
     public ResponseEntity<CreateExamResponse> create(@RequestBody ExamRequestDTO examRequestDTO){
@@ -88,22 +93,33 @@ public class ExamController {
     }
 
     @GetMapping ("get-by-userid")
-    public ResponseEntity<List<ExamResponseDTO>> getExamsByUserId(@RequestParam String userId){
-        List<Exam> exams=new ArrayList<Exam>();
-        exams=examRepository.findByUserId(userId);
-        List<ExamResponseDTO> examResponseDTOS=new ArrayList<ExamResponseDTO>();
-
-        for(Exam exam:exams){
-            ExamWithoutUserDTO examWithoutUserDTO=new ExamWithoutUserDTO(exam);
-            List<Question> questions=new ArrayList<Question>();
-            questions=questionRepository.findByExamId(exam.getId());
-            List<QuestionWithoutExam> questionWithoutExams=new ArrayList<QuestionWithoutExam>();
-            for(Question question:questions){
-                questionWithoutExams.add(new QuestionWithoutExam(question));
-            }
-            examResponseDTOS.add(new ExamResponseDTO(examWithoutUserDTO,questionWithoutExams));
+    public ResponseEntity<List<ExamResponseDTO>> getExamsByUserId(@RequestHeader(value ="Authorization", required = false) String authHeader){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(examResponseDTOS);
+
+        String token = authHeader.substring(7);
+        if (jwtTokenService.validateToken(token)){
+            String userId = jwtTokenService.getUserIdFromToken(token);
+            List<Exam> exams=new ArrayList<Exam>();
+            exams=examRepository.findByUserId(userId);
+            List<ExamResponseDTO> examResponseDTOS=new ArrayList<ExamResponseDTO>();
+
+            for(Exam exam:exams){
+                ExamWithoutUserDTO examWithoutUserDTO=new ExamWithoutUserDTO(exam);
+                List<Question> questions=new ArrayList<Question>();
+                questions=questionRepository.findByExamId(exam.getId());
+                List<QuestionWithoutExam> questionWithoutExams=new ArrayList<QuestionWithoutExam>();
+                for(Question question:questions){
+                    questionWithoutExams.add(new QuestionWithoutExam(question));
+                }
+                examResponseDTOS.add(new ExamResponseDTO(examWithoutUserDTO,questionWithoutExams));
+            }
+            return ResponseEntity.ok(examResponseDTOS);
+        }
+
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }
