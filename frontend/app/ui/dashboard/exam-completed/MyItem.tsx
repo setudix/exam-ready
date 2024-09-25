@@ -3,7 +3,7 @@ import React from "react";
 
 type props = {
   left: string;
-  right: string;
+  right: string | number;
 };
 const MyItem = ({left, right}:props) => {
   return (
