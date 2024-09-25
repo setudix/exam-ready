@@ -55,9 +55,12 @@ type FormValues = {
   isExamDurationInfinite: boolean;
 };
 const schema = yup.object({
+  examName: yup.string().max(100).required(),
+  examDuration: yup.number(),
   allowNegativeMarking: yup.boolean(),
   isExamDurationInfinite: yup.boolean(),
   isExamDurationAuto: yup.boolean(),
+  promptText: yup.string().min(100, "Prompt too short, minimum 100 characters").max(10000, "Prompt too large, max 10,000 characters").required('Must enter prompt text')
 });
 const ExamForm = ({ handleLoading }: props) => {
   //////// EXAM FORM CREATION
@@ -78,8 +81,8 @@ const ExamForm = ({ handleLoading }: props) => {
     examCreationForm;
 
   const [isExamDurationAuto, setIsExamDurationAuto] = useState<boolean>(true);
-  const [examDuration, setExamDuration] = useState<number>(0);
-  const [questionSize, setQuestionSize] = useState<number>(15);
+  const [examDuration, setExamDuration] = useState<number>(5);
+  const [questionSize, setQuestionSize] = useState<number>(5);
   const [promptText, setPromptText] = useState<string>("");
   const [examColor, setExamColor] = useState<string>("#a3a3a3");
   const [isExamDurationInfinite, setExamDurationInfinite] =
@@ -98,14 +101,7 @@ const ExamForm = ({ handleLoading }: props) => {
     setValue("examColor", examColor);
   }, [examColor]);
 
-  // useEffect(() => {
-  //   setValue("allowNegativeMarking", allowNegativeMarking as boolean);
-  // }, [allowNegativeMarking])
 
-  // useEffect(() => {
-  //   setValue("isExamDurationInfinite", isExamDurationInfinite);
-  //   console.log("--- : ", isExamDurationInfinite);
-  // },[isExamDurationInfinite])
   ////////// ZUSTAND STUFF
   const updateMCQData = UseMCQDataStore((state) => state.update);
   
@@ -123,18 +119,16 @@ const ExamForm = ({ handleLoading }: props) => {
   ////////// ON SUBMIT
 
   const onSubmit = async (data: FormValues) => {
-    // console.log("userid: ", userId);
-    console.log("before ", data);
     try {
       handleLoading(true);
       handleState(examState.WAITING);
       
-      var userId = ' ';
-      if (loading === "authenticated") {
-        userId = session?.user.id;
+      var userId:string | undefined = ' ';
+      if (status == "authenticated") {
+        userId = session.user.id;
       }
-
-      const response = await fetch(routes.createDummyExam, {
+      data.userId = userId;
+      const response = await fetch(routes.createExam, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,13 +141,12 @@ const ExamForm = ({ handleLoading }: props) => {
       }
       const result = await response.json();
 
-      console.log("Form submitted successfully:", result);
 
       updateMCQData(result);
       handleLoading(false);
       handleState(examState.WAITING_AND_DATAREADY);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      // console.error("Error submitting form:", error);
     }
   };
 
@@ -185,8 +178,8 @@ const ExamForm = ({ handleLoading }: props) => {
   const handleBlur = () => {
     if (questionSize < 5) {
       setQuestionSize(5);
-    } else if (questionSize > 50) {
-      setQuestionSize(50);
+    } else if (questionSize > 20) {
+      setQuestionSize(20);
     }
   };
 
@@ -201,12 +194,10 @@ const ExamForm = ({ handleLoading }: props) => {
             marginTop: "2rem",
           }}
         >
-          {/* <Card sx={{margin:4, padding:4}}> */}
           <Stack direction="column" spacing={3}>
             <Stack direction="row" alignItems="center" spacing={2}>
               <ArticleIcon color="action" />
               <Box sx={{ flexGrow: 1 }}>
-                {/* <Typography variant="caption">Exam Name:</Typography> */}
                 <TextField
                   fullWidth
                   placeholder="Enter the name of the exam"
@@ -240,7 +231,6 @@ const ExamForm = ({ handleLoading }: props) => {
                     {...register("isExamDurationAuto", {
                       onChange: (e) => {
                         setIsExamDurationAuto((pv) => !pv);
-                        // console.log("from onchange: " + isExamDurationAuto);
                       },
                     })}
                   />
@@ -315,10 +305,9 @@ const ExamForm = ({ handleLoading }: props) => {
                 </Stack>
                 <Slider
                   value={questionSize}
-                  // onChange={handleSliderChange}
                   min={5}
                   max={20}
-                  step={5}
+                  step={1}
                   marks
                   valueLabelDisplay="auto"
                   {...register("questionSize", {
@@ -427,7 +416,6 @@ const ExamForm = ({ handleLoading }: props) => {
               </Button>
             </Stack>
           </Stack>
-          {/* </Card> */}
         </Box>
       </form>
     </>

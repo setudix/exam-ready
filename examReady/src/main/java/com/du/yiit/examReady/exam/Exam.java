@@ -45,7 +45,7 @@ import jakarta.persistence.*;
         @Column(name = "numberOfAnswered", nullable = false, columnDefinition = "int DEFAULT 0")
         private int numberOfAnswered;
 
-        @Column(name = "score", nullable = true)
+        @Column(name = "score", nullable = false, columnDefinition = "double DEFAULT 0")
         private double score;
 
         @Column(name = "numberOfCorrect", nullable = false, columnDefinition = "int DEFAULT 0")

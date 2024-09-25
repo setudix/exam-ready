@@ -19,7 +19,6 @@ const Timer = () => {
   const examData = UseMCQDataStore((s) => s.data);
 
   const getExamTime = () => {
-    console.log("examData: ", examData);
     if (examData){
       if (examData.exam?.isExamDurationInfinite) {
         return -1;
@@ -30,14 +29,13 @@ const Timer = () => {
       if (examData.exam?.duration) {
         return examData.exam.duration * 60;
       }
-      return 5;
+      return 300;
     }
     return 0;
   };
 
   const initialTime = useMemo(() => {
     if (state === examState.WAITING_AND_DATAREADY) {
-      console.log(state);
       const time = getExamTime();
       setTimeLeft(time);
       return time;
@@ -50,7 +48,6 @@ const Timer = () => {
     }
     return false;
   };
-  // console.log("time limit: ", initialTime);
   useEffect(() => {
     if (state === examState.RUNNING && getExamUntimed() == false) {
       if (timeLeft > 0) {

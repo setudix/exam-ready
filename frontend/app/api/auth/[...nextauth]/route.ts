@@ -63,7 +63,6 @@ const AuthOptions: NextAuthOptions = {
             id,
             provider
           });
-          console.log("Status: " + response.status);
           if (response.status === 200)
           {
             token.accessToken = response?.data?.token;

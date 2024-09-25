@@ -23,7 +23,7 @@ public class ExamService {
 
     public int createExam(ExamRequestDTO examRequestDTO){
         Exam exam=new Exam();
-        if(examRequestDTO.getUserId().equals(" ")){
+        if(examRequestDTO.getUserId().equals(" ") || examRequestDTO.getUserId() == null){
             examRequestDTO.setUserId("Unauthorized");
         }
         exam.setName(examRequestDTO.getExamName());

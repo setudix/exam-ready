@@ -59,9 +59,9 @@ public class ExamController {
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
 
-//        if(exam.isTaken()){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
+        if(exam.isTaken()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
 
         questionService.updateQuestionAnswers(submittedExamDTO);
         exam.setTaken(true);
@@ -75,17 +75,17 @@ public class ExamController {
     @GetMapping
     public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam("id") int examId,@RequestHeader(value ="Authorization", required = false) String authHeader){
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
         String token = authHeader.substring(7);
-        if (jwtTokenService.validateToken(token)){
-            String userId = jwtTokenService.getUserIdFromToken(token);
-            if(!userId.equals(exam.getUser().getId())){
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-            }}
+//        if (jwtTokenService.validateToken(token)){
+//            String userId = jwtTokenService.getUserIdFromToken(token);
+//            if(!userId.equals(exam.getUser().getId())){
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//            }}
 
         ExamUtils examUtils=new ExamUtils(questionRepository);
         exam.setNumberOfAnswered(examUtils.getNumberOfAnswered(exam));

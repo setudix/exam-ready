@@ -11,33 +11,25 @@ const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [data, setData] = useState([]);
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     try {
-      // setLoading(true);
-      // console.log("in callback", status);
       const acstoken =
         status === "authenticated" ? `Bearer ${session.token}` : "";
 
-      console.log(acstoken);
       const hdr =
         acstoken == "" ? {} : { headers: { Authorization: `${acstoken}` } };
 
       const response = await axios.get(routes.getExamHistoryWithAuth, {
         ...hdr,
       });
-      console.log(response.data);
       setData(response.data);
     } catch (error: any) {
-      console.log(error.message);
-      // setError(error.message);
-    } finally {
-      // setLoading(false);
-    }
-  }, [status]);
+    } 
+
+  };
 
   useEffect(() => {
     fetchData();
-    // console.log(status);
   }, [status]);
 
   return (
