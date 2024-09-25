@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,13 +52,21 @@ public class ExamController {
         return ResponseEntity.ok(new CreateExamResponse(examWithoutPromptDTO,questionWithoutCorrectDTOS));
     }
 
+
     @PostMapping("/submit-exam")
     public ResponseEntity<ExamResultDTO> submitExam(@RequestBody SubmittedExamDTO submittedExamDTO) {
-        questionService.updateQuestionAnswers(submittedExamDTO);
         int examId = submittedExamDTO.getExamId();
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
+
+//        if(exam.isTaken()){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//        }
+
+        questionService.updateQuestionAnswers(submittedExamDTO);
         exam.setTaken(true);
+        Instant now = Instant.now();
+        exam.setSubmissionDate(now.getEpochSecond());
         examRepository.save(exam);
         //var questionWithCorrectDTOS = questionService.getDTOList(submittedExamDTO);
         return ResponseEntity.ok(new ExamResultDTO(examId));

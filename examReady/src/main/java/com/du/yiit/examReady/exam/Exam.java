@@ -45,8 +45,41 @@ import jakarta.persistence.*;
         @Column(name = "numberOfAnswered", nullable = false, columnDefinition = "int DEFAULT 0")
         private int numberOfAnswered;
 
-        @Column(name = "score", nullable = false, columnDefinition = "double DEFAULT 0")
+        @Column(name = "score", nullable = true)
         private double score;
+
+        @Column(name = "numberOfCorrect", nullable = false, columnDefinition = "int DEFAULT 0")
+        private int numberOfCorrect;
+
+        @Column(name="creation_date")
+        private long creationDate;
+
+        @Column(name="submission_date")
+        private long submissionDate;
+
+    public long getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(long creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public long getSubmissionDate() {
+        return submissionDate;
+    }
+
+    public void setSubmissionDate(long submissionDate) {
+        this.submissionDate = submissionDate;
+    }
+
+    public int getNumberOfCorrect() {
+        return numberOfCorrect;
+    }
+
+    public void setNumberOfCorrect(int numberOfCorrect) {
+        this.numberOfCorrect = numberOfCorrect;
+    }
 
     public Integer getId() {
         return id;
