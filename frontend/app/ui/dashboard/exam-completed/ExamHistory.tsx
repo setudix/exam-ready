@@ -47,7 +47,6 @@ const ExamHistory = ({ data }: props) => {
   );
 
   useEffect(() => {
-    console.log(data);
     setCurrent(data);
   }, [data]);
 
@@ -59,7 +58,6 @@ const ExamHistory = ({ data }: props) => {
       return d.examWithoutUserDTO?.color === examColor ? true : false;
     });
     setCurrent(filteredData);
-    console.log(current);
   }, [examColor]);
 
   return (

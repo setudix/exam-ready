@@ -55,14 +55,7 @@ const SignInButton = () => {
         color="inherit"
         variant="text"
         onClick={handleBtnClick}
-        // sx={{
-        //   color: "white",
-        //   borderColor: "white",
-        //   "&:hover": {
-        //     bgcolor: "rgba(255, 255, 255, 0.08)",
-        //     borderColor: "white",
-        //   },
-        // }}
+
         startIcon={<LoginIcon />}
       >
         <Typography variant="subtitle2"> Sign In </Typography>
@@ -93,7 +86,7 @@ const SignInButton = () => {
             </Typography>
           </ListItemText>
         </MenuItem>
-        <MenuItem onClick={() => handleSignIn("facebook")}>
+        {/* <MenuItem onClick={() => handleSignIn("facebook")}>
           <ListItemIcon>
             <FacebookIcon></FacebookIcon>
           </ListItemIcon>
@@ -102,7 +95,7 @@ const SignInButton = () => {
               Sign in with Facebook
             </Typography>
           </ListItemText>
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>

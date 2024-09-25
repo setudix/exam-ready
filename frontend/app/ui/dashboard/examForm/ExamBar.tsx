@@ -13,13 +13,6 @@ const ExamBar = () => {
   var examData = UseMCQDataStore((s) => s.data);
   const state = UseExamStore((s) => s.state);
 
-  // console.log(state);
-  // useEffect(() => {
-  //   if(state === examState.WAITING_AND_DATAREADY){
-  //     examData = UseMCQDataStore(s => s.data);
-  //   }
-  // }, [state]);
-
   useEffect(() => {
     const handleScroll = () => {
       if (appBarRef.current) {

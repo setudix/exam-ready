@@ -37,11 +37,11 @@ const HeroComponent = () => {
             Prepare for your{" "}
             <ReactTyped
               strings={[
-                "Math exam",
+                "Generale knowledge test",
                 "Science test",
                 "History quiz",
-                "Language assessment",
-                "Coding interview",
+                "Current affairs test",
+                "Competitive exams",
               ]}
               typeSpeed={40}
               backSpeed={50}

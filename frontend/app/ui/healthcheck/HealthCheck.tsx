@@ -11,9 +11,7 @@ const HealthCheck = () => {
 
   const checkStatus = async () => {
     try {
-      // console.log("checking, snackbar : " + isSnackBarOpen);
       const response = await axios.get(routes.healthCheck);
-      // console.log("status: ", response.status);
       if (response.status === 200) {
         setApiStatus(true);
         setIsSnakBarOpen(false);

@@ -11,23 +11,18 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react'
 
 const Page = ({ params } : any) => {
-  // const router = useRouter();
-  // const { id } = router.query;
   const {data: session, status} = useSession();
   const id = params.id;
   const [data, setData] = useState<CompletedExamDataType>({});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
-  // console.log(id);
   const fetchData = useCallback(async ()=> {
     try{
       setLoading(true);
-      console.log("calling")
 
       const acstoken =
         status === "authenticated" ? `Bearer ${session.token}` : "";
 
-      console.log(acstoken);
       const hdr =
         acstoken == "" ? {} : { headers: { Authorization: `${acstoken}` } };
       const response = await axios.get(routes.getExamById, {
@@ -36,11 +31,9 @@ const Page = ({ params } : any) => {
           id: id,
         },
       });
-      console.log(response.data);
       setData(response.data);
 
     } catch (error : any){
-      console.log(error.message);
       setError(error.message);
     } finally {
       setLoading(false);

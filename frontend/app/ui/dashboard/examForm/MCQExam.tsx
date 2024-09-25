@@ -66,11 +66,9 @@ const MCQExam = ({ loading }: prop) => {
       examId: examData.exam?.id,
     };
 
-    console.log(formattedData);
     try {
       const response = await axios.post(routes.submitMCQExam, formattedData);
 
-      console.log(JSON.stringify(formattedData, null, 2));
       setSubmittedData(formattedData);
       setOpenSnackbar(true);
       // handleState
@@ -85,7 +83,6 @@ const MCQExam = ({ loading }: prop) => {
 
   useEffect(() => {
     if (xmState == examState.TIMEUP) {
-      console.log(xmState);
 
       const handleAutoSubmit = async () => {
         await handleSubmit(onSubmit)();
