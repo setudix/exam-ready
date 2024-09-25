@@ -81,8 +81,8 @@ const ExamForm = ({ handleLoading }: props) => {
     examCreationForm;
 
   const [isExamDurationAuto, setIsExamDurationAuto] = useState<boolean>(true);
-  const [examDuration, setExamDuration] = useState<number>(0);
-  const [questionSize, setQuestionSize] = useState<number>(15);
+  const [examDuration, setExamDuration] = useState<number>(5);
+  const [questionSize, setQuestionSize] = useState<number>(5);
   const [promptText, setPromptText] = useState<string>("");
   const [examColor, setExamColor] = useState<string>("#a3a3a3");
   const [isExamDurationInfinite, setExamDurationInfinite] =
@@ -124,10 +124,10 @@ const ExamForm = ({ handleLoading }: props) => {
       handleState(examState.WAITING);
       
       var userId:string | undefined = ' ';
-      if (status === "authenticated") {
+      if (status == "authenticated") {
         userId = session.user.id;
       }
-
+      data.userId = userId;
       const response = await fetch(routes.createExam, {
         method: "POST",
         headers: {
@@ -146,7 +146,7 @@ const ExamForm = ({ handleLoading }: props) => {
       handleLoading(false);
       handleState(examState.WAITING_AND_DATAREADY);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      // console.error("Error submitting form:", error);
     }
   };
 
@@ -178,8 +178,8 @@ const ExamForm = ({ handleLoading }: props) => {
   const handleBlur = () => {
     if (questionSize < 5) {
       setQuestionSize(5);
-    } else if (questionSize > 50) {
-      setQuestionSize(50);
+    } else if (questionSize > 20) {
+      setQuestionSize(20);
     }
   };
 

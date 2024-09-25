@@ -29,7 +29,7 @@ const Timer = () => {
       if (examData.exam?.duration) {
         return examData.exam.duration * 60;
       }
-      return 5;
+      return 300;
     }
     return 0;
   };

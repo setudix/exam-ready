@@ -106,7 +106,7 @@ const ExamHistory = ({ data }: props) => {
         )}
         {current && current.length > 0 ? (
           current.map((element: CompletedExamDataType, index) => (
-            <Accordion sx={{ borderRadius: 2, marginY: 4, padding: 1 }}>
+            <Accordion key={index} sx={{ borderRadius: 2, marginY: 4, padding: 1 }}>
               <AccordionSummary key={index} expandIcon={<ExpandMoreIcon />}>
                 <Stack direction="row" spacing={2}>
                   <CircleIcon

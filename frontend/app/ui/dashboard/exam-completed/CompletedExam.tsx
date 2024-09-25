@@ -149,8 +149,8 @@ const CompletedExam = ({ info, ques }: prop) => {
           </Paper>
           {ques &&
             ques.map((q: CompletedExamQuestionType, index) => (
-              <Box>
-                <Paper key={index} sx={{ marginBottom: 4, padding: 4 }}>
+              <Box key={index}>
+                <Paper  sx={{ marginBottom: 4, padding: 4 }}>
                   <Typography variant="body1" sx={{pb: 4}}>
                     {`${index + 1}. ${q.question}`}
                   </Typography>

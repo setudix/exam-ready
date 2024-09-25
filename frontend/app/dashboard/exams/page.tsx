@@ -11,7 +11,7 @@ const Page = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [data, setData] = useState([]);
-  const fetchData = useCallback(async () => {
+  const fetchData = async () => {
     try {
       const acstoken =
         status === "authenticated" ? `Bearer ${session.token}` : "";
@@ -26,7 +26,7 @@ const Page = () => {
     } catch (error: any) {
     } 
 
-  }, [status]);
+  };
 
   useEffect(() => {
     fetchData();

@@ -29,7 +29,9 @@ function Navbar() {
     null
   );
   const { data: session, status } = useSession();
-
+    useEffect(() => {
+      // console.log(status);
+    },[status])
   const avatarIcon = React.useMemo(() => {
     return status === "loading" ? (
       <Skeleton variant="circular" width={40} height={40} />
