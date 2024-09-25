@@ -23,7 +23,9 @@ public class ExamService {
 
     public int createExam(ExamRequestDTO examRequestDTO){
         Exam exam=new Exam();
-
+        if(examRequestDTO.getUserId().equals(" ")){
+            examRequestDTO.setUserId("Unauthorized");
+        }
         exam.setName(examRequestDTO.getExamName());
         exam.setQuestionSize(examRequestDTO.getQuestionSize());
         exam.setPrompt(examRequestDTO.getPromptText());

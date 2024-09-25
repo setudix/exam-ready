@@ -73,11 +73,20 @@ public class ExamController {
     }
 
     @GetMapping
-    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam("id") int examId){
+    public ResponseEntity<ExamResponseDTO> getExamById(@RequestParam("id") int examId,@RequestHeader(value ="Authorization", required = false) String authHeader){
 
-        System.out.println("exam id : "  + examId);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         Optional<Exam> optionalExam = examRepository.findById(examId);
         Exam exam = optionalExam.get();
+        String token = authHeader.substring(7);
+        if (jwtTokenService.validateToken(token)){
+            String userId = jwtTokenService.getUserIdFromToken(token);
+            if(!userId.equals(exam.getUser().getId())){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }}
+
         ExamUtils examUtils=new ExamUtils(questionRepository);
         exam.setNumberOfAnswered(examUtils.getNumberOfAnswered(exam));
         PerformanceEvaluator performanceEvaluator=new PerformanceEvaluator();
